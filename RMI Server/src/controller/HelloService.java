@@ -13,7 +13,7 @@ public class HelloService
 	
 	/**
 	 * Checking Service to make sure REST works
-	 * make a GET request to http://localhost:8080/Fire_Alarm_System/rest/hello
+	 * GET to http://localhost:8080/Fire_Alarm_System/rest/hello
 	 * @return a status of 200 and a message
 	 */
 	@GET

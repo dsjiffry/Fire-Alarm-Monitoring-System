@@ -1,8 +1,7 @@
 package model;
 
 public class Sensor 
-{
-	
+{	
 	private String Name;
 	private boolean active = true;
 	private int floorNumber;
@@ -10,7 +9,7 @@ public class Sensor
 	private int smokeLevel = 0;
 	private int co2Level = 0;
 	
-	private Sensor() {}
+	public Sensor() {}	//Required for POJO
 	
 	public Sensor(int floorNumber, int roomNumber) 
 	{
@@ -71,9 +70,6 @@ public class Sensor
 	public void setRoomNumber(int roomNumber) {
 		this.roomNumber = roomNumber;
 	}
-	
-	
-	
 	
 	
 	
