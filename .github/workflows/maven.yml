@@ -22,8 +22,8 @@ jobs:
         java-version: 1.8
     - name: Build RMI Client
       run: mvn -B package --file pom.xml
-      working-directory: ./client/
+      working-directory: ./RMI/client/
 
     - name: Build RMI Server
       run: mvn -B package --file pom.xml
-      working-directory: ./server/
+      working-directory: ./RMI/server/
