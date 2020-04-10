@@ -2,7 +2,7 @@ package model;
 
 public class Sensor 
 {	
-	private String Name;
+	private String name;
 	private boolean active = true;
 	private int floorNumber;
 	private int roomNumber;
@@ -54,11 +54,11 @@ public class Sensor
 	}
 
 	public String getName() {
-		return Name;
+		return name;
 	}
 
 	public void setName(String name) {
-		Name = name;
+		this.name = name;
 	}
 
 	public int getRoomNumber() {
