@@ -1,10 +1,14 @@
 
-import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.concurrent.atomic.AtomicInteger;
+
+import org.apache.http.client.HttpClient;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
+
+import com.google.gson.Gson;
 
 import model.Sensor;
 
@@ -12,7 +16,9 @@ public class Server extends UnicastRemoteObject implements ServerInterface
 {
 	
 	private final String PHEONIX_API_URL = "https://hookb.in/xYNbnkrY6KHLMbORNp7M";
-
+	private Gson gson = new Gson();
+	HttpClient httpClient = HttpClientBuilder.create().build();
+	
     public Server() throws RemoteException{
         super();
     }
@@ -26,27 +32,20 @@ public class Server extends UnicastRemoteObject implements ServerInterface
         } catch (RemoteException ignored) {
             //Means RMI registry is already running
         }
-
-        // set the policy file as the system securuty policy
+        
         System.setProperty("java.security.policy", "file:allowall.policy");
 
- 
+        try{  
 
-        try{
-
-        	Server svr = new Server();
-		 // Bind the remote object's stub in the registry
+            ServerInterface server = new Server();
             Registry registry = LocateRegistry.getRegistry();
-            registry.bind("rmiServer", svr);
+            registry.bind("rmiServer", server);
 
            
             System.out.println ("Service started....");
         }
-        catch(RemoteException re){
-            System.err.println(re.getMessage());
-        }
-        catch(AlreadyBoundException abe){
-            System.err.println(abe.getMessage());
+        catch(Exception e){
+            System.err.println(e.getMessage());
         }
     }
    
@@ -54,6 +53,24 @@ public class Server extends UnicastRemoteObject implements ServerInterface
 	public void addSensor(int floorNumber, int roomNumber)
 	{
 		Sensor sensor = new Sensor(floorNumber, roomNumber);
+		System.out.println("WORKS");
+		StringEntity postingString = null;
+//		try {
+//			postingString = new StringEntity(gson.toJson(sensor));
+//			HttpPost post = new HttpPost(PHEONIX_API_URL);
+//			post.setEntity(postingString);
+//			post.setHeader("Content-type", "application/json");
+//			HttpResponse  response = httpClient.execute(post);
+//			System.out.println(response.getStatusLine().getStatusCode());
+			
+//		} catch (UnsupportedEncodingException e) {
+//			e.printStackTrace();
+//		} catch (ClientProtocolException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+		
 		
 		
 	}
@@ -79,4 +96,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface
 		
 	}
 
+	
+	
+	private static final long serialVersionUID = 1L;
 }
