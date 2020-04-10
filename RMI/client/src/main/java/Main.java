@@ -1,9 +1,7 @@
 
 import java.rmi.Naming;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
+import java.util.Map;
+
 
 public class Main 
 {
@@ -15,8 +13,15 @@ public class Main
 		
         try {
         	ServerInterface service = (ServerInterface) Naming.lookup("//localhost/rmiServer");
-            
-	        service.addSensor(3,6);
+			
+			// service.addSensor(3, 5);
+
+			for(Map<String,String> sensor : service.viewSensors())
+			{
+				System.out.println(sensor.get("name"));
+			}
+
+	        
 	        
 	        
 	        

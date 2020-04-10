@@ -1,23 +1,32 @@
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 import com.google.gson.Gson;
 
-import model.Sensor;
-
 public class Server extends UnicastRemoteObject implements ServerInterface
 {
 	
-	private final String PHEONIX_API_URL = "https://hookb.in/xYNbnkrY6KHLMbORNp7M";
-	private Gson gson = new Gson();
-	HttpClient httpClient = HttpClientBuilder.create().build();
+	private final String PHEONIX_API_URL = "https://webhook.site/88d053bd-0739-48dc-8ff4-f6f2389e67ee";
+
 	
     public Server() throws RemoteException{
         super();
@@ -43,6 +52,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface
 
            
             System.out.println ("Service started....");
+            new Server().viewSensors();
         }
         catch(Exception e){
             System.err.println(e.getMessage());
@@ -50,52 +60,127 @@ public class Server extends UnicastRemoteObject implements ServerInterface
     }
    
 
-	public void addSensor(int floorNumber, int roomNumber)
+   /**
+    * Will make a JSON request to add a Sensor to the database
+    */
+   @Override
+	public boolean addSensor(int floorNumber, int roomNumber)
 	{
-		Sensor sensor = new Sensor(floorNumber, roomNumber);
-		System.out.println("WORKS");
-		StringEntity postingString = null;
-//		try {
-//			postingString = new StringEntity(gson.toJson(sensor));
-//			HttpPost post = new HttpPost(PHEONIX_API_URL);
-//			post.setEntity(postingString);
-//			post.setHeader("Content-type", "application/json");
-//			HttpResponse  response = httpClient.execute(post);
-//			System.out.println(response.getStatusLine().getStatusCode());
+		Map<String, String> body = new HashMap<>();
+		body.put("floorNumber", String.valueOf(floorNumber));
+		body.put("roomNumber", String.valueOf(roomNumber));
+		return makeRequest(body, "POST", PHEONIX_API_URL);
+	}
+	
+
+	@Override
+	public boolean removeSensor(String floorNumber, String roomNumber) throws RemoteException 
+	{
+		Map<String, String> body = new HashMap<>();
+		body.put("floorNumber", String.valueOf(floorNumber));
+		body.put("roomNumber", String.valueOf(roomNumber));
+		return makeRequest(body, "DELETE", PHEONIX_API_URL);
+	}
+
+	@Override
+	public boolean changeLevels(String floorNumber, String roomNumber, int smokeLevel, int co2Level) throws RemoteException 
+	{
+		Map<String, String> body = new HashMap<>();
+		body.put("floorNumber", String.valueOf(floorNumber));
+		body.put("roomNumber", String.valueOf(roomNumber));
+		body.put("co2Level", String.valueOf(co2Level));
+		return makeRequest(body, "PUT", PHEONIX_API_URL);
+	}
+
+	@Override
+	public boolean changeState(String floorNumber, String roomNumber, boolean state) throws RemoteException 
+	{
+		Map<String, String> body = new HashMap<>();
+		body.put("floorNumber", String.valueOf(floorNumber));
+		body.put("roomNumber", String.valueOf(roomNumber));
+		body.put("state", String.valueOf(state));
+		return makeRequest(body, "PUT", PHEONIX_API_URL);
+	}
+
+	@Override
+	public ArrayList< Map<String, String> > viewSensors() throws RemoteException 
+	{
+		ArrayList< Map<String, String> > sensors = new ArrayList<>();
+		
+		HttpClient httpClient = HttpClientBuilder.create().build();
+		HttpGet get = new HttpGet(PHEONIX_API_URL);
+		get.setHeader("Content-type", "application/json");
+		get.setHeader("Accept", "application/json");
+		
+		HttpResponse response = null;
+		String responseString = null;
+		try {
+			 response = httpClient.execute(get);
+			 responseString = new BasicResponseHandler().handleResponse(response);
+		} 
+		catch (ClientProtocolException e) { e.printStackTrace(); } 
+		catch (IOException e) { e.printStackTrace(); }
+		
+		for(String string : responseString.split("\".*\":\\s\\{"))
+		{			
+			string = string.replaceAll("[{}]|(\\r\\n|\\r|\\n).*}.*,", "");
+			if(string.trim().length() == 0)
+			{
+				continue;
+			}
+			string = "{\n"+string.replace("},", "").trim() +"\n}";
+		
+			Map<String,String> sensor = new Gson().fromJson(string , HashMap.class);
+			sensors.add(sensor);
+		}		
+		return sensors;
+	}
+
+
+
+	
+	public boolean makeRequest(Map<String, String> body, String RequestType, String URL)
+	{
+		HttpResponse response = null;
+		try {
+			HttpClient httpClient = HttpClientBuilder.create().build();
+			StringEntity postingString = new StringEntity(new Gson().toJson(body));
 			
-//		} catch (UnsupportedEncodingException e) {
-//			e.printStackTrace();
-//		} catch (ClientProtocolException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-		
-		
-		
-	}
+			switch (RequestType) {
+			case "POST":
+				HttpPost post = new HttpPost(URL);
+				post.setEntity(postingString);
+				post.setHeader("Content-type", "application/json");
+				response = httpClient.execute(post);
+				break;
+				
+			case "PUT":
+				HttpPut put = new HttpPut(URL);
+				put.setEntity(postingString);
+				put.setHeader("Content-type", "application/json");
+				response = httpClient.execute(put);
+				break;
+				
+			case "DELETE":
+				HttpDelete delete = new HttpDelete(URL);
+				delete.setHeader("Content-type", "application/json");
+				response = httpClient.execute(delete);
+				break;
+			}
+			
 
-	public void removeSensor(String floorNumber, String roomNumber) throws RemoteException {
-		// TODO Auto-generated method stub
-		
+			
+		} 
+		catch (UnsupportedEncodingException e) { e.printStackTrace(); }
+		catch (ClientProtocolException e) { e.printStackTrace(); }
+		catch (IOException e) { e.printStackTrace(); }
+				
+		if(response == null || response.getStatusLine().getStatusCode() > 399)
+		{
+			return false;
+		}		
+		return true;
 	}
-
-	public void changeLevels(String floorNumber, String roomNumber, int smokeLevel, int co2Level)
-			throws RemoteException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void changeState(String floorNumber, String roomNumber, boolean state) throws RemoteException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void viewSensors() throws RemoteException {
-		// TODO Auto-generated method stub
-		
-	}
-
 	
 	
 	private static final long serialVersionUID = 1L;
