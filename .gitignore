@@ -92,6 +92,4 @@ local.properties
 .sts4-cache/
 /target/
 [Ll]ogs/
-/RMI Client/RMI Client/nbproject/private/
-/RMI Client/RMI Client/build/
-/RMI Client/RMI Client/dist/
+/RMI/client/target/

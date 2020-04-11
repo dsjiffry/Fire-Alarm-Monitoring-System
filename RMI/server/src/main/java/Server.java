@@ -25,7 +25,7 @@ import com.google.gson.Gson;
 public class Server extends UnicastRemoteObject implements ServerInterface
 {
 	
-	private final String PHEONIX_API_URL = "https://webhook.site/88d053bd-0739-48dc-8ff4-f6f2389e67ee";
+	private final String PHEONIX_API_URL = "https://webhook.site/9ea4dde3-4b4e-4c22-a317-663b386686ea";
 
 	
     public Server() throws RemoteException{
@@ -52,7 +52,6 @@ public class Server extends UnicastRemoteObject implements ServerInterface
 
            
             System.out.println ("Service started....");
-            new Server().viewSensors();
         }
         catch(Exception e){
             System.err.println(e.getMessage());
