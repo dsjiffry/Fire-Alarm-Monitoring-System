@@ -25,11 +25,11 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
-        working-directory: ./Authentication Service/
+        working-directory:./Authentication Service/
     - run: npm run build --if-present
-        working-directory: ./Authentication Service/
+        working-directory:./Authentication Service/
     - run: npm test
-        working-directory: ./Authentication Service/
+        working-directory:./Authentication Service/
       env:
         CI: true
         
