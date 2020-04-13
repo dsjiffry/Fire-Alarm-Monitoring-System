@@ -4,20 +4,17 @@ let nodemailer = require('nodemailer');
 
 app.use(express.json());
 
-
-let emailAddresses = ["bar@example.com", "baz@example.com"];  //Email will be sent to these addresses
-let smsNumbers = ["0771234567"];  //sms will be sent to these numbers
-
 /**
  * Send email Alert
  * POST to http://localhost:8080/emailAlert
- * JSON keys: "message"
+ * with JSON keys: "message", "emailAddresses"
  */
 app.post('/emailAlert', async(req, res) =>
 {
-  let message = req.body.message;
+  let message = req.body.message; // Body of the Email
+  let emailAddresses = req.body.emailAddresses; //Email will be sent to these addresses
 
-  if (!(message))
+  if (!(message) || !(emailAddresses))
   {
     return res.status(404).send('Error in JSON body');
   }
@@ -35,33 +32,32 @@ app.post('/emailAlert', async(req, res) =>
   });
 
   let info = await transporter.sendMail({
-    from: '"Fire Alarm Service 👻" <Alert@FireAlarm.com>', // sender address
+    from: '"Fire Alarm Service" <Alert@FireAlarm.com>', // sender address
     to: emailAddresses, // list of receivers
     subject: "Fire Alarm Service Alert", // Subject line
     text: message, // plain text body
   });
 
   console.log("Email sent");
-  return res.status(200).send(nodemailer.getTestMessageUrl(info));
+  return res.status(200).send(nodemailer.getTestMessageUrl(info)); //Will return a URL to preview the email that was sent
 });
 
 /**
  * Send SMS Alert
  * POST to http://localhost:8080/smsAlert
- * JSON keys: "message"
+ * JSON keys: "message", "smsNumbers"
  */
 app.post('/smsAlert', async(req, res) =>
 {
   let message = req.body.message;
-  console.log(message);
+  let smsNumbers = req.body.smsNumbers; //Email will be sent to these addresses
 
-  if (!(message))
+  if (!(message) || !(smsNumbers))
   {
     return res.status(404).send('Error in JSON body');
   }
-
   console.log("Sms sent");
-  return res.status(200).send("Sms sent: "+message);
+  return res.status(200).send("Sms sent: "+message);  
 
 });
 
