@@ -138,6 +138,7 @@ public class Login extends javax.swing.JFrame {
         closeButton.setToolTipText("");
         closeButton.setBorder(null);
         closeButton.setBorderPainted(false);
+        closeButton.setContentAreaFilled(false);
         closeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 closeButtonActionPerformed(evt);
