@@ -5,9 +5,15 @@
  */
 package forms;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import mdlaf.MaterialLookAndFeel;
+import mdlaf.animation.MaterialUIMovement;
+import mdlaf.components.button.MaterialButtonUI;
+import mdlaf.utils.MaterialColors;
 
 /**
  *
@@ -21,7 +27,7 @@ public class Login extends javax.swing.JFrame {
     public Login() {
         initComponents();
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
     }
 
     /**
@@ -41,9 +47,8 @@ public class Login extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         jSeparator2 = new javax.swing.JSeparator();
         jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        signInButton = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
         closeButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -51,12 +56,17 @@ public class Login extends javax.swing.JFrame {
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel5.setBackground(new java.awt.Color(48, 48, 48));
+        jPanel5.setBackground(MaterialColors.BLUE_GRAY_900);
         jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jTextField1.setBackground(jPanel5.getBackground());
-        jTextField1.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        jTextField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jTextField1.setForeground(new java.awt.Color(255, 255, 255));
+        jTextField1.setToolTipText("");
         jTextField1.setBorder(null);
+        jTextField1.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        jTextField1.setDisabledTextColor(new java.awt.Color(204, 204, 204));
+        jTextField1.setSelectedTextColor(new java.awt.Color(204, 204, 204));
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField1ActionPerformed(evt);
@@ -65,9 +75,11 @@ public class Login extends javax.swing.JFrame {
         jPanel5.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 222, 210, 22));
 
         jPasswordField1.setBackground(jPanel5.getBackground());
-        jPasswordField1.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        jPasswordField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jPasswordField1.setForeground(new java.awt.Color(255, 255, 255));
         jPasswordField1.setBorder(null);
+        jPasswordField1.setDisabledTextColor(new java.awt.Color(204, 204, 204));
+        jPasswordField1.setSelectedTextColor(new java.awt.Color(204, 204, 204));
         jPasswordField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jPasswordField1ActionPerformed(evt);
@@ -81,6 +93,7 @@ public class Login extends javax.swing.JFrame {
         jPanel5.add(label2, new org.netbeans.lib.awtextra.AbsoluteConstraints(69, 69, 135, 48));
 
         jPanel6.setBackground(new java.awt.Color(100, 181, 246));
+        jPanel6.setBackground(MaterialColors.LIGHT_BLUE_400);
         jPanel6.setMinimumSize(new java.awt.Dimension(135, 48));
         jPanel6.setPreferredSize(new java.awt.Dimension(135, 48));
 
@@ -103,34 +116,24 @@ public class Login extends javax.swing.JFrame {
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/password_icon.png"))); // NOI18N
         jPanel5.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 300, 52, 40));
 
-        jButton1.setBackground(new java.awt.Color(25, 118, 210));
-        jButton1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Sign In");
-        jButton1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(100, 181, 246)));
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        signInButton.setBackground(new java.awt.Color(25, 118, 210));
+        signInButton.setFont(new java.awt.Font("Tahoma", 0, 20)); // NOI18N
+        signInButton.setForeground(new java.awt.Color(255, 255, 255));
+        signInButton.setText("Sign In");
+        signInButton.setBorder(null);
+        signInButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        signInButton.setBackground (MaterialColors.BLUE_800);
+        signInButton.setForeground (Color.WHITE);
+        signInButton.addMouseListener(MaterialUIMovement.getMovement(signInButton, MaterialColors.INDIGO_900));
+        signInButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                signInButtonActionPerformed(evt);
             }
         });
-        jPanel5.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 420, 290, 40));
+        jPanel5.add(signInButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 420, 290, 40));
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/username_icon.png"))); // NOI18N
         jPanel5.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 210, -1, 50));
-
-        jButton2.setBackground(new java.awt.Color(25, 118, 210));
-        jButton2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setText("Sign In");
-        jButton2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(100, 181, 246)));
-        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-        jPanel5.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 420, 290, 40));
 
         closeButton.setBackground(new java.awt.Color(48, 48, 48));
         closeButton.setForeground(new java.awt.Color(48, 48, 48));
@@ -139,6 +142,9 @@ public class Login extends javax.swing.JFrame {
         closeButton.setBorder(null);
         closeButton.setBorderPainted(false);
         closeButton.setContentAreaFilled(false);
+        closeButton.setBackground (MaterialColors.BLUE_GRAY_900);
+
+        closeButton.addMouseListener(MaterialUIMovement.getMovement(closeButton, MaterialColors.GRAY_900));
         closeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 closeButtonActionPerformed(evt);
@@ -151,25 +157,21 @@ public class Login extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
-
     private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jPasswordField1ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
-
     private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
-       System.exit(0);
+        System.exit(0);
     }//GEN-LAST:event_closeButtonActionPerformed
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void signInButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_signInButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -198,6 +200,13 @@ public class Login extends javax.swing.JFrame {
         }
         //</editor-fold>
 
+        try {
+            UIManager.setLookAndFeel(new MaterialLookAndFeel());
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
+        
+
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -208,8 +217,6 @@ public class Login extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeButton;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel5;
@@ -219,5 +226,6 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTextField jTextField1;
     private java.awt.Label label2;
+    private javax.swing.JButton signInButton;
     // End of variables declaration//GEN-END:variables
 }
