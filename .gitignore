@@ -199,14 +199,9 @@ dist
 
 
 
-
-
-
-
-
-
-
 .sts4-cache/
 /target/
 [Ll]ogs/
 /RMI/client/target/
+!/RMI/client/src/main/resources/*
+!/RMI/client/local-maven-repo/*
