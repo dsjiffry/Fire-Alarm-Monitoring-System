@@ -8,11 +8,13 @@ package forms;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import mdlaf.MaterialLookAndFeel;
 import mdlaf.animation.MaterialUIMovement;
-import mdlaf.components.button.MaterialButtonUI;
 import mdlaf.utils.MaterialColors;
 
 /**
@@ -26,6 +28,7 @@ public class Login extends javax.swing.JFrame {
      */
     public Login() {
         initComponents();
+
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
     }
@@ -40,8 +43,8 @@ public class Login extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel5 = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
-        jPasswordField1 = new javax.swing.JPasswordField();
+        username = new javax.swing.JTextField();
+        password = new javax.swing.JPasswordField();
         label2 = new java.awt.Label();
         jPanel6 = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
@@ -52,6 +55,7 @@ public class Login extends javax.swing.JFrame {
         closeButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
         setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -59,33 +63,33 @@ public class Login extends javax.swing.JFrame {
         jPanel5.setBackground(MaterialColors.BLUE_GRAY_900);
         jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jTextField1.setBackground(jPanel5.getBackground());
-        jTextField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jTextField1.setForeground(new java.awt.Color(255, 255, 255));
-        jTextField1.setToolTipText("");
-        jTextField1.setBorder(null);
-        jTextField1.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
-        jTextField1.setDisabledTextColor(new java.awt.Color(204, 204, 204));
-        jTextField1.setSelectedTextColor(new java.awt.Color(204, 204, 204));
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        username.setBackground(jPanel5.getBackground());
+        username.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        username.setForeground(new java.awt.Color(255, 255, 255));
+        username.setToolTipText("");
+        username.setBorder(null);
+        username.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        username.setDisabledTextColor(new java.awt.Color(204, 204, 204));
+        username.setSelectedTextColor(new java.awt.Color(204, 204, 204));
+        username.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                usernameActionPerformed(evt);
             }
         });
-        jPanel5.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 222, 210, 22));
+        jPanel5.add(username, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 222, 210, 22));
 
-        jPasswordField1.setBackground(jPanel5.getBackground());
-        jPasswordField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jPasswordField1.setForeground(new java.awt.Color(255, 255, 255));
-        jPasswordField1.setBorder(null);
-        jPasswordField1.setDisabledTextColor(new java.awt.Color(204, 204, 204));
-        jPasswordField1.setSelectedTextColor(new java.awt.Color(204, 204, 204));
-        jPasswordField1.addActionListener(new java.awt.event.ActionListener() {
+        password.setBackground(jPanel5.getBackground());
+        password.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        password.setForeground(new java.awt.Color(255, 255, 255));
+        password.setBorder(null);
+        password.setDisabledTextColor(new java.awt.Color(204, 204, 204));
+        password.setSelectedTextColor(new java.awt.Color(204, 204, 204));
+        password.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jPasswordField1ActionPerformed(evt);
+                passwordActionPerformed(evt);
             }
         });
-        jPanel5.add(jPasswordField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 310, 209, 20));
+        jPanel5.add(password, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 310, 209, 20));
 
         label2.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
         label2.setForeground(new java.awt.Color(255, 255, 255));
@@ -157,20 +161,32 @@ public class Login extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField1ActionPerformed
+    private void passwordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jPasswordField1ActionPerformed
+    }//GEN-LAST:event_passwordActionPerformed
 
     private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
         System.exit(0);
     }//GEN-LAST:event_closeButtonActionPerformed
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void usernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usernameActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_usernameActionPerformed
 
     private void signInButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInButtonActionPerformed
-        // TODO add your handling code here:
+
+        if (username.getText().equalsIgnoreCase("admin") && new String(password.getPassword()).equalsIgnoreCase("admin")) {
+            for (float i = 1.0f; i > 0.0f; i -= 0.2f) { //Fade out effect
+                this.setOpacity(i);
+                try {
+                    Thread.sleep(30);
+                } catch (Exception ignored) {
+                }
+            }
+            this.setVisible(false);
+            MainPage mainPage = new MainPage();
+            mainPage.setVisible(true);
+        }
     }//GEN-LAST:event_signInButtonActionPerformed
 
     /**
@@ -205,7 +221,7 @@ public class Login extends javax.swing.JFrame {
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
-        
+
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -221,11 +237,11 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
-    private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JTextField jTextField1;
     private java.awt.Label label2;
+    private javax.swing.JPasswordField password;
     private javax.swing.JButton signInButton;
+    private javax.swing.JTextField username;
     // End of variables declaration//GEN-END:variables
 }
