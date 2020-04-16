@@ -1,7 +1,9 @@
 package Controllers;
 
+import forms.Alert;
 import forms.Login;
 import java.net.MalformedURLException;
+import java.rmi.ConnectException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -11,11 +13,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Sensor;
 
-public class Main {
+public class Client {
 
     private ServerInterface service;
 
-    public Main() {
+    public Client() {
 
         System.setProperty("java.security.policy", "file:allowall.policy");
 
@@ -27,6 +29,7 @@ public class Main {
             service = (ServerInterface) Naming.lookup("rmi://localhost/rmiServer");
         } catch (MalformedURLException | NotBoundException | RemoteException ex) {
             ex.printStackTrace();
+            Alert alert = new Alert("Connection error. Unable to reach RMI server");
         }
     }
 
@@ -83,8 +86,9 @@ public class Main {
      * Will request all the sensors in the database from the RMI server
      *
      * @return ArrayList of all the Sensors
+     * @throws java.rmi.ConnectException
      */
-    public ArrayList<Sensor> getSensors() {
+    public ArrayList<Sensor> getSensors(){
         try {
             return service.viewSensors();
         } catch (RemoteException ex) {

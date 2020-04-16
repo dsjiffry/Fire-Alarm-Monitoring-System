@@ -5,6 +5,7 @@
  */
 package forms;
 
+import Controllers.Client;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -186,6 +187,10 @@ public class Login extends javax.swing.JFrame {
             this.setVisible(false);
             MainPage mainPage = new MainPage();
             mainPage.setVisible(true);
+        }
+        else
+        {
+            Alert alert = new Alert("Incorrect username/Password");
         }
     }//GEN-LAST:event_signInButtonActionPerformed
 

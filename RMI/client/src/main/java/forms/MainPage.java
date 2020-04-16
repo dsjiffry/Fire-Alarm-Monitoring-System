@@ -5,31 +5,30 @@
  */
 package forms;
 
-import Controllers.Main;
+import Controllers.Client;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.rmi.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.border.AbstractBorder;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import mdlaf.MaterialLookAndFeel;
 import mdlaf.animation.MaterialUIMovement;
 import mdlaf.components.combobox.MaterialComboBoxUI;
-import mdlaf.components.formattertextfield.MaterialFormattedTextFieldUI;
 import mdlaf.components.tabbedpane.MaterialTabbedPaneUI;
 import mdlaf.components.table.MaterialTableUI;
-import mdlaf.components.textfield.MaterialComponentField;
 import mdlaf.components.togglebutton.MaterialToggleButtonUI;
 import mdlaf.utils.MaterialColors;
 import model.Sensor;
@@ -43,6 +42,8 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
     private ArrayList<Sensor> sensors;
     private Vector<String> columns;
     private Vector<Vector<Object>> items;
+    private Alert alert;
+    private Client rmiclient;
 
     /**
      * Creates new form MainPage
@@ -53,17 +54,24 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
         columns.add("Room Number");
         columns.add("Active");
 
+        rmiclient = new Client();
+
         initComponents();
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
 
+        jTable1.setEnabled(false);
         Thread t1 = new Thread(this);
         t1.start();
 
+        deleteSensorButton.setEnabled(false);
+        activeToggle.setEnabled(false);
         jTable1.getSelectionModel().addListSelectionListener((ListSelectionEvent event) -> {
 
             if (jTable1.getSelectedRow() > -1) {
                 int floorNumber = (int) jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+                deleteSensorButton.setEnabled(true);
+                activeToggle.setEnabled(true);
 
                 if (floorNumber > 0) {
                     for (Sensor sensor : sensors) {
@@ -76,16 +84,28 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
                         }
                     }
                 }
+            } else {
+                deleteSensorButton.setEnabled(false);
+                activeToggle.setEnabled(false);
             }
         });
 
     }
 
     public void run() {
-        Main main = new Main();
+        Client tclient = new Client();
         while (true) //Updating sensors every 30s
         {
-            sensors = main.getSensors();
+            tableMessage.setText("updating table...");
+
+            try {
+                sensors = tclient.getSensors();
+            } catch (Exception e) { // happens if not online. So we try again in 5s
+                tableMessage.setText("Please make sure that you are online.");
+                threadSleep(5000);
+                continue;
+            }
+
             items = new Vector<>();
             List<String> dropDownList = new ArrayList<>();
             dropDownList.add("All");
@@ -105,17 +125,15 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
             }
 
             UpdateTable();
+            jTable1.setEnabled(true);
 
             // Populating the Drop down list
             int selectedRow = jComboBox1.getSelectedIndex();
             jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(dropDownList.toArray(new String[0])));
             jComboBox1.setSelectedIndex(selectedRow);
 
-            try {
-                Thread.sleep(30000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(MainPage.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            tableMessage.setText("");
+            threadSleep(30000); // sleep for 30s
         }
 
     }
@@ -180,16 +198,6 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
         jPanel1 = new javax.swing.JPanel();
         closeButton = new javax.swing.JButton();
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        addSensor = new javax.swing.JPanel();
-        label2 = new java.awt.Label();
-        jPanel6 = new javax.swing.JPanel();
-        floorNumberInput = new javax.swing.JTextField();
-        jSeparator2 = new javax.swing.JSeparator();
-        roomNumberInput = new javax.swing.JPasswordField();
-        jSeparator1 = new javax.swing.JSeparator();
-        signInButton = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         manageSensor = new javax.swing.JPanel();
         label3 = new java.awt.Label();
         jPanel7 = new javax.swing.JPanel();
@@ -200,6 +208,17 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
         jLabel4 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        tableMessage = new javax.swing.JLabel();
+        addSensor = new javax.swing.JPanel();
+        label2 = new java.awt.Label();
+        jPanel6 = new javax.swing.JPanel();
+        jSeparator2 = new javax.swing.JSeparator();
+        jSeparator1 = new javax.swing.JSeparator();
+        addSensorButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        floorNumberInput = new javax.swing.JFormattedTextField();
+        roomNumberInput = new javax.swing.JFormattedTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -237,133 +256,6 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
 
         jTabbedPane1.setUI(mtpUI);
         jTabbedPane1.setBackground(MaterialColors.BLUE_GRAY_900);
-
-        addSensor.setBackground(MaterialColors.BLUE_GRAY_900);
-
-        label2.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        label2.setForeground(new java.awt.Color(255, 255, 255));
-        label2.setText("Add a New Sensor");
-
-        jPanel6.setBackground(new java.awt.Color(100, 181, 246));
-        jPanel6.setMinimumSize(new java.awt.Dimension(135, 48));
-
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        floorNumberInput.setBackground(addSensor.getBackground());
-        floorNumberInput.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        floorNumberInput.setForeground(new java.awt.Color(255, 255, 255));
-        floorNumberInput.setToolTipText("");
-        floorNumberInput.setBorder(null);
-        floorNumberInput.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
-        floorNumberInput.setDisabledTextColor(new java.awt.Color(204, 204, 204));
-        floorNumberInput.setSelectedTextColor(new java.awt.Color(204, 204, 204));
-        floorNumberInput.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                floorNumberInputActionPerformed(evt);
-            }
-        });
-
-        roomNumberInput.setBackground(addSensor.getBackground());
-        roomNumberInput.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        roomNumberInput.setForeground(new java.awt.Color(255, 255, 255));
-        roomNumberInput.setBorder(null);
-        roomNumberInput.setDisabledTextColor(new java.awt.Color(204, 204, 204));
-        roomNumberInput.setSelectedTextColor(new java.awt.Color(204, 204, 204));
-        roomNumberInput.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                roomNumberInputActionPerformed(evt);
-            }
-        });
-
-        signInButton.setBackground(new java.awt.Color(25, 118, 210));
-        signInButton.setFont(new java.awt.Font("Tahoma", 0, 20)); // NOI18N
-        signInButton.setForeground(new java.awt.Color(255, 255, 255));
-        signInButton.setText("add Sensor");
-        signInButton.setBorder(null);
-        signInButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        signInButton.setBackground (MaterialColors.BLUE_800);
-        signInButton.setForeground (Color.WHITE);
-        signInButton.addMouseListener(MaterialUIMovement.getMovement(signInButton, MaterialColors.INDIGO_900));
-        signInButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                signInButtonActionPerformed(evt);
-            }
-        });
-
-        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Floor Number:");
-
-        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Room Number:");
-
-        javax.swing.GroupLayout addSensorLayout = new javax.swing.GroupLayout(addSensor);
-        addSensor.setLayout(addSensorLayout);
-        addSensorLayout.setHorizontalGroup(
-            addSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(addSensorLayout.createSequentialGroup()
-                .addGroup(addSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(addSensorLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(addSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(addSensorLayout.createSequentialGroup()
-                                .addGap(1, 1, 1)
-                                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(addSensorLayout.createSequentialGroup()
-                        .addGap(125, 125, 125)
-                        .addGroup(addSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(addSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(addSensorLayout.createSequentialGroup()
-                                .addGroup(addSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(floorNumberInput, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(roomNumberInput, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, addSensorLayout.createSequentialGroup()
-                                .addGap(87, 87, 87)
-                                .addComponent(signInButton, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(303, Short.MAX_VALUE))
-        );
-        addSensorLayout.setVerticalGroup(
-            addSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(addSensorLayout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(3, 3, 3)
-                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(45, 45, 45)
-                .addGroup(addSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(floorNumberInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addGap(1, 1, 1)
-                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(44, 44, 44)
-                .addGroup(addSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(roomNumberInput, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addGap(0, 0, 0)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(signInButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(146, Short.MAX_VALUE))
-        );
-
-        jTabbedPane1.addTab("Add Sensor", addSensor);
 
         manageSensor.setBackground(MaterialColors.BLUE_GRAY_900);
 
@@ -486,6 +378,11 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
         jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane2.setViewportView(jTable1);
 
+        tableMessage.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        tableMessage.setForeground(new java.awt.Color(255, 255, 255));
+        tableMessage.setMaximumSize(new java.awt.Dimension(470, 17));
+        tableMessage.setMinimumSize(new java.awt.Dimension(470, 17));
+
         javax.swing.GroupLayout manageSensorLayout = new javax.swing.GroupLayout(manageSensor);
         manageSensor.setLayout(manageSensorLayout);
         manageSensorLayout.setHorizontalGroup(
@@ -509,7 +406,8 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
                             .addComponent(deleteSensorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(45, 45, 45))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, manageSensorLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(tableMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))))
@@ -524,23 +422,137 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
                         .addGap(3, 3, 3)
                         .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(manageSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(manageSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(manageSensorLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(manageSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(109, 109, 109)
                         .addComponent(activeToggle, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(49, 49, 49)
                         .addComponent(deleteSensorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(manageSensorLayout.createSequentialGroup()
-                        .addGap(25, 25, 25)
+                        .addGap(30, 30, 30)
+                        .addComponent(tableMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Manage  Sensors", manageSensor);
+
+        addSensor.setBackground(MaterialColors.BLUE_GRAY_900);
+
+        label2.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        label2.setForeground(new java.awt.Color(255, 255, 255));
+        label2.setText("Add a New Sensor");
+
+        jPanel6.setBackground(new java.awt.Color(100, 181, 246));
+        jPanel6.setMinimumSize(new java.awt.Dimension(135, 48));
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        addSensorButton.setBackground(new java.awt.Color(25, 118, 210));
+        addSensorButton.setFont(new java.awt.Font("Tahoma", 0, 20)); // NOI18N
+        addSensorButton.setForeground(new java.awt.Color(255, 255, 255));
+        addSensorButton.setText("add Sensor");
+        addSensorButton.setBorder(null);
+        addSensorButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        addSensorButton.setBackground (MaterialColors.BLUE_800);
+        addSensorButton.setForeground (Color.WHITE);
+        addSensorButton.addMouseListener(MaterialUIMovement.getMovement(addSensorButton, MaterialColors.INDIGO_900));
+        addSensorButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addSensorButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setText("Floor Number:");
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setText("Room Number:");
+
+        floorNumberInput.setBackground(addSensor.getBackground());
+        floorNumberInput.setBorder(null);
+        floorNumberInput.setForeground(new java.awt.Color(255, 255, 255));
+        floorNumberInput.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+        floorNumberInput.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+
+        roomNumberInput.setBackground(addSensor.getBackground());
+        roomNumberInput.setBorder(null);
+        roomNumberInput.setForeground(new java.awt.Color(255, 255, 255));
+        roomNumberInput.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+        roomNumberInput.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+
+        javax.swing.GroupLayout addSensorLayout = new javax.swing.GroupLayout(addSensor);
+        addSensor.setLayout(addSensorLayout);
+        addSensorLayout.setHorizontalGroup(
+            addSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(addSensorLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(addSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(addSensorLayout.createSequentialGroup()
+                        .addGroup(addSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(addSensorLayout.createSequentialGroup()
+                                .addGap(1, 1, 1)
+                                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(595, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, addSensorLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(addSensorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(314, 314, 314))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, addSensorLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addGroup(addSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(addSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(floorNumberInput, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(roomNumberInput, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(237, 237, 237))
+        );
+        addSensorLayout.setVerticalGroup(
+            addSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(addSensorLayout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(3, 3, 3)
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(59, 59, 59)
+                .addGroup(addSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(floorNumberInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(1, 1, 1)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(44, 44, 44)
+                .addGroup(addSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(roomNumberInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, 0)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(47, 47, 47)
+                .addComponent(addSensorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(103, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Add Sensor", addSensor);
 
         jPanel1.add(jTabbedPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 830, 470));
 
@@ -553,29 +565,31 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
         System.exit(0);
     }//GEN-LAST:event_closeButtonActionPerformed
 
-    private void floorNumberInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_floorNumberInputActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_floorNumberInputActionPerformed
+    private void addSensorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addSensorButtonActionPerformed
+        int floorNumber = -1;
+        int roomNumber = -1;
 
-    private void roomNumberInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_roomNumberInputActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_roomNumberInputActionPerformed
-
-    private void signInButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInButtonActionPerformed
-
-        if (floorNumberInput.getText().equalsIgnoreCase("admin") && new String(roomNumberInput.getPassword()).equalsIgnoreCase("admin")) {
-            for (float i = 1.0f; i > 0.0f; i -= 0.2f) { //Fade out effect
-                this.setOpacity(i);
-                try {
-                    Thread.sleep(30);
-                } catch (Exception ignored) {
-                }
-            }
-            this.setVisible(false);
-            MainPage mainPage = new MainPage();
-            mainPage.setVisible(true);
+        try {
+            floorNumber = Integer.valueOf(floorNumberInput.getText());
+            roomNumber = Integer.valueOf(roomNumberInput.getText());
+        } catch (NumberFormatException e) {
+            alert = new Alert("Invalid inputs");
+            return;
         }
-    }//GEN-LAST:event_signInButtonActionPerformed
+
+        if (floorNumber <= 0 || roomNumber <= 0) {
+            alert = new Alert("Invalid inputs");
+            return;
+        }
+
+        if (rmiclient.addSensor(floorNumber, roomNumber)) {
+            alert = new Alert("Sensor added sucessfully");
+        } else {
+            alert = new Alert("Error when adding Sensor");
+        }
+
+
+    }//GEN-LAST:event_addSensorButtonActionPerformed
 
     private void activeToggleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activeToggleActionPerformed
         int selectedRow = jTable1.getSelectedRow();
@@ -583,17 +597,15 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
             activeToggle.setEnabled(false);
             int floorNumber = (int) jTable1.getValueAt(selectedRow, 0);
             int roomNumber = (int) jTable1.getValueAt(selectedRow, 1);
-            Main main = new Main();
             for (Sensor sensor : sensors) {
                 if (sensor.getFloorNumber() == floorNumber) {
                     boolean state = false;
                     if (jTable1.getValueAt(selectedRow, 2).toString().equalsIgnoreCase("Inactive")) {
                         state = true;
                     }
-                    boolean result = main.changeState(floorNumber, roomNumber, state);
-                    if(!result)
-                    {
-                        // TODO: ERROR MESSAGE
+                    boolean result = rmiclient.changeState(floorNumber, roomNumber, state);
+                    if (!result) {
+                        alert = new Alert("Unable to change Sensor state");
                     }
                 }
             }
@@ -603,7 +615,38 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
     }//GEN-LAST:event_activeToggleActionPerformed
 
     private void deleteSensorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteSensorButtonActionPerformed
-        // TODO add your handling code here:
+
+        if (jTable1.getSelectedRow() < 0) {
+            return;
+        }
+
+        int floorNumber = (int) jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+        int roomNumber = (int) jTable1.getValueAt(jTable1.getSelectedRow(), 1);
+
+        UIManager.put("Panel.background", MaterialColors.BLUE_GRAY_300);
+
+        int result = JOptionPane.showConfirmDialog(jPanel1,
+                "                         Sure you want to delete sensor on floor " + floorNumber + " room number " + roomNumber + "                         ",
+                "Confirm Delete",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+        switch (result) {
+            case JOptionPane.NO_OPTION:
+
+                break;
+
+            case JOptionPane.YES_OPTION:
+                if (rmiclient.removeSensor(floorNumber, roomNumber)) {
+                    alert = new Alert("Sensor deleted sucessfully");
+                    UpdateTable();
+                } else {
+                    alert = new Alert("Error Deleting Server");
+                }
+
+                break;
+        }
+
+
     }//GEN-LAST:event_deleteSensorButtonActionPerformed
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
@@ -661,12 +704,21 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
         });
     }
 
+    public void threadSleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton activeToggle;
     private javax.swing.JPanel addSensor;
+    private javax.swing.JButton addSensorButton;
     private javax.swing.JButton closeButton;
     private javax.swing.JButton deleteSensorButton;
-    private javax.swing.JTextField floorNumberInput;
+    private javax.swing.JFormattedTextField floorNumberInput;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -683,8 +735,8 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
     private java.awt.Label label2;
     private java.awt.Label label3;
     private javax.swing.JPanel manageSensor;
-    private javax.swing.JPasswordField roomNumberInput;
-    private javax.swing.JButton signInButton;
+    private javax.swing.JFormattedTextField roomNumberInput;
+    private javax.swing.JLabel tableMessage;
     // End of variables declaration//GEN-END:variables
 
 }
