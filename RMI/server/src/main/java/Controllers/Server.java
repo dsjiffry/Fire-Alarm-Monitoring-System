@@ -27,7 +27,7 @@ import com.google.gson.Gson;
 
 public class Server extends UnicastRemoteObject implements ServerInterface {
 
-	private final String PHEONIX_API_URL = "https://webhook.site/7b0a8040-d159-4d31-b282-8aa3811be03c";
+	private final String PHEONIX_API_URL = "https://webhook.site/72edc2d8-fd3a-4645-8b58-281572404a4e";
 
 	public Server() throws RemoteException {
 		super();
@@ -79,7 +79,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 		Map<String, String> body = new HashMap<>();
 		body.put("floorNumber", String.valueOf(floorNumber));
 		body.put("roomNumber", String.valueOf(roomNumber));
-		return makeRequest(body, "DELETE", PHEONIX_API_URL);
+		return makeRequest(body, "DELETE", PHEONIX_API_URL); //TODO: add params to url
 	}
 
 	/**
