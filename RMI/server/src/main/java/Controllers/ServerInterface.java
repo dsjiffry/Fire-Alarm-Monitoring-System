@@ -3,8 +3,6 @@ package Controllers;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Map;
-
 import model.Sensor;
 
 public interface ServerInterface extends Remote {

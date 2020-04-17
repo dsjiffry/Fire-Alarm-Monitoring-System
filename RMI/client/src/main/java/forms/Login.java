@@ -5,13 +5,9 @@
  */
 package forms;
 
-import Controllers.Client;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import mdlaf.MaterialLookAndFeel;
@@ -24,6 +20,8 @@ import mdlaf.utils.MaterialColors;
  */
 public class Login extends javax.swing.JFrame {
 
+     public static boolean loggedIn = false;
+    
     /**
      * Creates new form Login
      */
@@ -163,7 +161,7 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void passwordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordActionPerformed
-        // TODO add your handling code here:
+        signInButtonActionPerformed(evt);
     }//GEN-LAST:event_passwordActionPerformed
 
     private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
@@ -171,7 +169,7 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_closeButtonActionPerformed
 
     private void usernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usernameActionPerformed
-        // TODO add your handling code here:
+        signInButtonActionPerformed(evt);
     }//GEN-LAST:event_usernameActionPerformed
 
     private void signInButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInButtonActionPerformed
@@ -184,12 +182,12 @@ public class Login extends javax.swing.JFrame {
                 } catch (Exception ignored) {
                 }
             }
+            loggedIn = true;
             this.setVisible(false);
             MainPage mainPage = new MainPage();
             mainPage.setVisible(true);
-        }
-        else
-        {
+        } else {
+            loggedIn = false;
             Alert alert = new Alert("Incorrect username/Password");
         }
     }//GEN-LAST:event_signInButtonActionPerformed
