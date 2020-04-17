@@ -10,15 +10,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.rmi.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.Border;
@@ -49,6 +44,13 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
      * Creates new form MainPage
      */
     public MainPage() {
+        
+//        if(!Login.loggedIn)
+//        {
+//            Login.main(new String[] {});
+//            return;
+//        }
+        
         columns = new Vector<>();
         columns.add("Floor Number");
         columns.add("Room Number");
@@ -143,7 +145,7 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
         Vector<Vector<Object>> filtereditems = new Vector<>();
 
         if (selectedRow > 0) {
-            int floorNumber = (int) Integer.valueOf(jComboBox1.getItemAt(selectedRow));
+            int floorNumber = Integer.valueOf(jComboBox1.getItemAt(selectedRow));
 
             for (Sensor sensor : sensors) {
                 if (sensor.getFloorNumber() == floorNumber) {
@@ -306,7 +308,6 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
         MaterialComboBoxUI mtcbUI = (MaterialComboBoxUI)MaterialComboBoxUI.createUI(jComboBox1);
         jComboBox1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         mtcbUI.installUI(jComboBox1);
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
@@ -623,16 +624,17 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
         int floorNumber = (int) jTable1.getValueAt(jTable1.getSelectedRow(), 0);
         int roomNumber = (int) jTable1.getValueAt(jTable1.getSelectedRow(), 1);
 
-        UIManager.put("Panel.background", MaterialColors.BLUE_GRAY_300);
+        UIManager.put("Panel.background", MaterialColors.BLUE_GRAY_800);
+        UIManager.put("OptionPane.messageForeground", MaterialColors.WHITE);
 
         int result = JOptionPane.showConfirmDialog(jPanel1,
-                "                         Sure you want to delete sensor on floor " + floorNumber + " room number " + roomNumber + "                         ",
+                "    Sure you want to delete sensor on floor " + floorNumber + ", room number " + roomNumber + "    ",
                 "Confirm Delete",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE);
         switch (result) {
             case JOptionPane.NO_OPTION:
-
+                //Do nothing 
                 break;
 
             case JOptionPane.YES_OPTION:
