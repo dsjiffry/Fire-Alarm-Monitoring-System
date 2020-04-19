@@ -14,4 +14,8 @@ public interface ServerInterface extends Remote {
     public boolean changeState(int floorNumber, int roomNumber, boolean state) throws RemoteException;
 
     public ArrayList<Sensor> viewSensors() throws RemoteException;
+
+    public boolean login(String username, String password) throws RemoteException;
+    
+    public boolean checkAuthenticationServer()  throws RemoteException;
 }

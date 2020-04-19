@@ -135,6 +135,38 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 	}
 
 	/**
+	 * Checks the login with the authorization api
+	 * @param username
+	 * @param password
+	 * @return true if valid login
+	 */
+	@Override
+	public boolean login(String username, String password) throws RemoteException {
+		Map<String, String> body = new HashMap<>();
+		body.put("username", String.valueOf(username));
+		body.put("password", String.valueOf(password));
+		return makeRequest(body, "POST", "http://localhost:8080/loginAdmin");
+	}
+
+	/**
+	 * Makes sure the authorization server is reachable
+	 * @return true if reachable
+	 */
+	@Override
+	public boolean checkAuthenticationServer() throws RemoteException {
+		Map<String, String> body = new HashMap<>();
+		return makeRequest(body, "POST", "http://localhost:8080/checkAuthenticationAlive");
+	}
+
+
+
+
+
+
+
+
+
+	/**
 	 * Used by add/remove/change methods to make requests.
 	 */
 	public boolean makeRequest(Map<String, String> body, String RequestType, String URL) {
@@ -180,4 +212,5 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 	}
 
 	private static final long serialVersionUID = 1L;
+
 }
