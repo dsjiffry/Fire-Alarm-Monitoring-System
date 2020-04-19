@@ -85,5 +85,33 @@ public class Client {
         }
         return new ArrayList<>();
     }
+    
+    /**
+     * Will check the login of the user
+     *
+     * @param username
+     * @param password
+     * @return true if login was successful
+     */
+    public boolean login(String username, String password) {
+        try {
+            return service.login(username, password);
+        } catch (RemoteException ex) {
+            return false;
+        }
+    }
+    
+      /**
+     * Will check if the authorization server is reachable
+     *
+     * @return true if reachable
+     */
+    public boolean checkAuthenticationServer() {
+        try {
+            return service.checkAuthenticationServer();
+        } catch (RemoteException ex) {
+            return false;
+        }
+    }
 
 }

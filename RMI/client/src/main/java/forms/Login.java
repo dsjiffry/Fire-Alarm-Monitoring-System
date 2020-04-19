@@ -5,6 +5,7 @@
  */
 package forms;
 
+import Controllers.Client;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -18,10 +19,10 @@ import mdlaf.utils.MaterialColors;
  *
  * @author Shehan
  */
-public class Login extends javax.swing.JFrame {
+public class Login extends javax.swing.JFrame implements Runnable {
 
-     public static boolean loggedIn = false;
-    
+    public static boolean loggedIn = false;
+
     /**
      * Creates new form Login
      */
@@ -30,6 +31,37 @@ public class Login extends javax.swing.JFrame {
 
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+
+        signInButton.setEnabled(false);
+       
+        Thread t1 = new Thread(this);
+        t1.start();
+    }
+
+    public void run() {
+        Client tclient = new Client();
+        while (true) {
+            jLabel1.setText("trying to reach server...");
+            if (!tclient.checkAuthenticationServer()) {
+                signInButton.setEnabled(false);
+                jLabel1.setText("Please check your connection.");
+
+                try {   //Try again in 5s
+                    Thread.sleep(5000);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                jLabel1.setText("");
+                signInButton.setEnabled(true);
+                
+                 try {   //sleep for 30s
+                    Thread.sleep(30000);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
     }
 
     /**
@@ -42,8 +74,8 @@ public class Login extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel5 = new javax.swing.JPanel();
-        username = new javax.swing.JTextField();
-        password = new javax.swing.JPasswordField();
+        usernameInput = new javax.swing.JTextField();
+        passwordInput = new javax.swing.JPasswordField();
         label2 = new java.awt.Label();
         jPanel6 = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
@@ -52,6 +84,7 @@ public class Login extends javax.swing.JFrame {
         signInButton = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         closeButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -62,33 +95,33 @@ public class Login extends javax.swing.JFrame {
         jPanel5.setBackground(MaterialColors.BLUE_GRAY_900);
         jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        username.setBackground(jPanel5.getBackground());
-        username.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        username.setForeground(new java.awt.Color(255, 255, 255));
-        username.setToolTipText("");
-        username.setBorder(null);
-        username.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
-        username.setDisabledTextColor(new java.awt.Color(204, 204, 204));
-        username.setSelectedTextColor(new java.awt.Color(204, 204, 204));
-        username.addActionListener(new java.awt.event.ActionListener() {
+        usernameInput.setBackground(jPanel5.getBackground());
+        usernameInput.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        usernameInput.setForeground(new java.awt.Color(255, 255, 255));
+        usernameInput.setToolTipText("");
+        usernameInput.setBorder(null);
+        usernameInput.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        usernameInput.setDisabledTextColor(new java.awt.Color(204, 204, 204));
+        usernameInput.setSelectedTextColor(new java.awt.Color(204, 204, 204));
+        usernameInput.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                usernameActionPerformed(evt);
+                usernameInputActionPerformed(evt);
             }
         });
-        jPanel5.add(username, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 222, 210, 22));
+        jPanel5.add(usernameInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 222, 210, 22));
 
-        password.setBackground(jPanel5.getBackground());
-        password.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        password.setForeground(new java.awt.Color(255, 255, 255));
-        password.setBorder(null);
-        password.setDisabledTextColor(new java.awt.Color(204, 204, 204));
-        password.setSelectedTextColor(new java.awt.Color(204, 204, 204));
-        password.addActionListener(new java.awt.event.ActionListener() {
+        passwordInput.setBackground(jPanel5.getBackground());
+        passwordInput.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        passwordInput.setForeground(new java.awt.Color(255, 255, 255));
+        passwordInput.setBorder(null);
+        passwordInput.setDisabledTextColor(new java.awt.Color(204, 204, 204));
+        passwordInput.setSelectedTextColor(new java.awt.Color(204, 204, 204));
+        passwordInput.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                passwordActionPerformed(evt);
+                passwordInputActionPerformed(evt);
             }
         });
-        jPanel5.add(password, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 310, 209, 20));
+        jPanel5.add(passwordInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 310, 209, 20));
 
         label2.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
         label2.setForeground(new java.awt.Color(255, 255, 255));
@@ -155,26 +188,35 @@ public class Login extends javax.swing.JFrame {
         });
         jPanel5.add(closeButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 0, 40, -1));
 
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jPanel5.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 480, 290, 20));
+
         getContentPane().add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 450, 590));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void passwordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordActionPerformed
+    private void passwordInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordInputActionPerformed
         signInButtonActionPerformed(evt);
-    }//GEN-LAST:event_passwordActionPerformed
+    }//GEN-LAST:event_passwordInputActionPerformed
 
     private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
         System.exit(0);
     }//GEN-LAST:event_closeButtonActionPerformed
 
-    private void usernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usernameActionPerformed
+    private void usernameInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usernameInputActionPerformed
         signInButtonActionPerformed(evt);
-    }//GEN-LAST:event_usernameActionPerformed
+    }//GEN-LAST:event_usernameInputActionPerformed
 
     private void signInButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInButtonActionPerformed
 
-        if (username.getText().equalsIgnoreCase("admin") && new String(password.getPassword()).equalsIgnoreCase("admin")) {
+        String username = usernameInput.getText();
+        String password = new String(passwordInput.getPassword());
+        Client client = new Client();
+
+        if (client.login(username, password)) {
             for (float i = 1.0f; i > 0.0f; i -= 0.2f) { //Fade out effect
                 this.setOpacity(i);
                 try {
@@ -236,6 +278,7 @@ public class Login extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeButton;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel5;
@@ -243,8 +286,8 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private java.awt.Label label2;
-    private javax.swing.JPasswordField password;
+    private javax.swing.JPasswordField passwordInput;
     private javax.swing.JButton signInButton;
-    private javax.swing.JTextField username;
+    private javax.swing.JTextField usernameInput;
     // End of variables declaration//GEN-END:variables
 }

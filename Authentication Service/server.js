@@ -13,18 +13,19 @@ let userSchema = mongoose.Schema({
   username: String,
   password: String,
   email: String,
-  phoneNumber: String
+  phoneNumber: String,
+  type: String  // either "user" or "admin"
 });
 
 //compiling schema to model
 let userModel = mongoose.model('User', userSchema, 'Users');
 
 /**
- * Login Function
- * POST to http://localhost:8080/login
+ * Login Function for users
+ * POST to http://localhost:8080/loginUser
  * With JSON Keys : "username", "password"
  */
-app.post('/login', (req, res) => {
+app.post('/loginUser', (req, res) => {
   let username = req.body.username;
   //Hashcoding password before checking with DB
   let password = encode().value(req.body.password);
@@ -35,7 +36,43 @@ app.post('/login', (req, res) => {
 
   connectToDB();
 
-  userModel.findOne({ username: username, password: password }, (err, user) => {
+  userModel.findOne({ username: username, password: password, type:"user"}, (err, user) => {
+    if (err) {
+      console.log(err);
+    }
+
+    //If a record is found
+    if (user) {
+      return res.status(200).send('Valid Login');
+    }
+
+    //If no record found
+    if (!user) {
+      console.log('Incorrect Login Details');
+      res.status(404).send('Incorrect Login Details');
+    }
+  });
+
+
+});
+
+/**
+ * Login Function for admins
+ * POST to http://localhost:8080/loginAdmin
+ * With JSON Keys : "username", "password"
+ */
+app.post('/loginAdmin', (req, res) => {
+  let username = req.body.username;
+  //Hashcoding password before checking with DB
+  let password = encode().value(req.body.password);
+
+  if (!(username) || password == 0) {
+    return res.status(404).send('Error in JSON body');
+  }
+
+  connectToDB();
+
+  userModel.findOne({ username: username, password: password, type:"admin"}, (err, user) => {
     if (err) {
       console.log(err);
     }
@@ -58,19 +95,25 @@ app.post('/login', (req, res) => {
 /**
  * Register New User Function
  * POST to http://localhost:8080/register
- * With JSON Keys : "username", "password", "email", "phoneNumber"
+ * With JSON Keys : "username", "password", "email", "phoneNumber", "type"
  */
 app.post('/register', (req, res) => {
 
   let username = req.body.username;
   let email = req.body.email;
   let phone = req.body.phoneNumber;
+  let type = req.body.type; // either "user" or "admin"
 
   //Hashcoding password for security before storing 
   let password = encode().value(req.body.password);
 
-  if (!(username) || password == 0 || !(email) || !(phone)) {
+  if (!(username) || password == 0 || !(email) || !(phone) || !(type)) {
     return res.status(404).send('Error in JSON body');
+  }
+
+  if(type != "admin" && type != "user")
+  {
+    return res.status(406).send('incorrect type in JSON body. must be either "admin" or "user"');
   }
 
   connectToDB();
@@ -94,7 +137,8 @@ app.post('/register', (req, res) => {
         username: username,
         password: password,
         email: email,
-        phoneNumber: phone
+        phoneNumber: phone,
+        type: type
       });
 
       //Saving to DB
@@ -173,10 +217,13 @@ app.post('/getPhoneNumbers', (req, res) => {
 
 
 
-  
+
 });
 
 
+app.post('/checkAuthenticationAlive',(req,res) => {
+  return res.status(200).send();
+});
 
 /**
  * Connecting to the Database
@@ -192,11 +239,7 @@ function connectToDB() {
     });
 }
 
-
-
-
-
-//Keep server running on port
+// Keep server running on port
 const port = 8080;
 app.listen(port, () => {
   console.log(`Server running on port:${port}`);
