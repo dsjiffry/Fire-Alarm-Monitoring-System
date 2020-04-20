@@ -43,6 +43,10 @@ app.post('/emailAlert', async (req, res) => {
   if (!(emailAddresses)) {
     emailAddresses = emailCache.slice();
   }
+  else
+  {
+    emailCache = emailAddresses.slice();
+  }
 
   let testAccount = await nodemailer.createTestAccount();
 
@@ -98,6 +102,10 @@ app.post('/smsAlert', async (req, res) => {
 
   if (!(smsNumbers)) {
     smsNumbers = smsCache.slice();
+  }
+  else
+  {
+    smsCache = smsNumbers.slice();
   }
 
   console.log("Sms sent");
