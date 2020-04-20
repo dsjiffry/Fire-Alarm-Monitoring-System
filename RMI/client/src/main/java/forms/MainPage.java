@@ -94,6 +94,7 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
 
     }
 
+    @Override
     public void run() {
         Client tclient = new Client();
         while (true) //Updating sensors every 30s

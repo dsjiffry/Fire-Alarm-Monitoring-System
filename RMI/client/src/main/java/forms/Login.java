@@ -38,6 +38,7 @@ public class Login extends javax.swing.JFrame implements Runnable {
         t1.start();
     }
 
+    @Override
     public void run() {
         Client tclient = new Client();
         while (true) {
