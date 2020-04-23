@@ -27,7 +27,7 @@ import com.google.gson.Gson;
 
 public class Server extends UnicastRemoteObject implements ServerInterface {
 
-	private final String PHEONIX_API_URL = "https://webhook.site/72edc2d8-fd3a-4645-8b58-281572404a4e";
+	private final String SENSOR_API_URL = "https://webhook.site/72edc2d8-fd3a-4645-8b58-281572404a4e";
 
 	public Server() throws RemoteException {
 		super();
@@ -66,7 +66,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 		Map<String, String> body = new HashMap<>();
 		body.put("floorNumber", String.valueOf(floorNumber));
 		body.put("roomNumber", String.valueOf(roomNumber));
-		return makeRequest(body, "POST", PHEONIX_API_URL);
+		return makeRequest(body, "POST", SENSOR_API_URL);
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 		Map<String, String> body = new HashMap<>();
 		body.put("floorNumber", String.valueOf(floorNumber));
 		body.put("roomNumber", String.valueOf(roomNumber));
-		return makeRequest(body, "DELETE", PHEONIX_API_URL); //TODO: add params to url
+		return makeRequest(body, "DELETE", SENSOR_API_URL); //TODO: add params to url
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 		body.put("floorNumber", String.valueOf(floorNumber));
 		body.put("roomNumber", String.valueOf(roomNumber));
 		body.put("state", String.valueOf(state));
-		return makeRequest(body, "PUT", PHEONIX_API_URL);
+		return makeRequest(body, "PUT", SENSOR_API_URL);
 	}
 
 	/**
@@ -106,7 +106,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 		ArrayList<Sensor> sensors = new ArrayList<>();
 
 		HttpClient httpClient = HttpClientBuilder.create().build();
-		HttpGet get = new HttpGet(PHEONIX_API_URL);
+		HttpGet get = new HttpGet(SENSOR_API_URL);
 		get.setHeader("Content-type", "application/json");
 		get.setHeader("Accept", "application/json");
 
