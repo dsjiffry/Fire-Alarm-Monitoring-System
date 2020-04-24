@@ -12,5 +12,5 @@ How to run this System:
 	Start the RMI Server by opening cmd in the root folder and running "java -jar ./RMI/server/target/rmiServer-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
 	
 	go to \RMI\client
-	run "mvn exec:java -Dexec.mainClass="forms.Login" in cmd.
+	run " mvn exec:java -Dexec.mainClass="forms.Login" " in cmd.
 	Login using the username and password as "admin".
