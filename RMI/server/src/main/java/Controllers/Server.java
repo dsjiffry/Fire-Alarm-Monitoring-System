@@ -27,7 +27,8 @@ import com.google.gson.Gson;
 
 public class Server extends UnicastRemoteObject implements ServerInterface {
 
-	private final String SENSOR_API_URL = "https://webhook.site/72edc2d8-fd3a-4645-8b58-281572404a4e";
+	private final String SENSOR_API_URL = "https://webhook.site/1c16714d-4818-48b4-be4b-cfdda9bd05b8";
+	private final String AUTHENTICATION_BASE_URL = "http://localhost:8080";
 
 	public Server() throws RemoteException {
 		super();
@@ -145,7 +146,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 		Map<String, String> body = new HashMap<>();
 		body.put("username", String.valueOf(username));
 		body.put("password", String.valueOf(password));
-		return makeRequest(body, "POST", "http://localhost:8080/loginAdmin");
+		return makeRequest(body, "POST", AUTHENTICATION_BASE_URL+"/loginAdmin");
 	}
 
 	/**
@@ -155,7 +156,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 	@Override
 	public boolean checkAuthenticationServer() throws RemoteException {
 		Map<String, String> body = new HashMap<>();
-		return makeRequest(body, "POST", "http://localhost:8080/checkAuthenticationAlive");
+		return makeRequest(body, "POST", AUTHENTICATION_BASE_URL+"/checkAuthenticationAlive");
 	}
 
 

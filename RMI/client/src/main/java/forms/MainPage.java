@@ -142,7 +142,7 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
             jComboBox1.setSelectedIndex(selectedRow);
 
             tableMessage.setText("");
-            threadSleep(30000); // sleep for 30s
+            threadSleep(15000); // sleep for 15s
         }
 
     }
