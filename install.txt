@@ -61,5 +61,25 @@ How to Run Sensor Service
 		1) Navigate into the Sensor_Service directory in a command line
 		
 		2) RUN npm install
-		
+			
 		3) RUN npm start
+		
+		
+How to Run Sensors (Sensor Clients)
+
+		1) Navigate into the Sensor_Service/sensor_client directory in a command line
+		
+		2) Run npm install
+		
+		3) To run a sensor with specific SensorID
+		
+			node sensor_client.js <SensorID>
+			
+			eg: node sensor_client sensor1
+		
+		
+		
+		
+		
+
+	
