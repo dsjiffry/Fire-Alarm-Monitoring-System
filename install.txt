@@ -76,9 +76,19 @@ How to Run Sensors (Sensor Clients)
 			node sensor_client.js <SensorID>
 			
 			eg: node sensor_client sensor1
+
+How to Run Sensor Monitering Service (The service that monitors and Sends Emails and SMS)
+	
+			
+		1) Navigate into the Sensor_Service/sensor_monitoring directory in a command line
 		
+		2) Run npm install
 		
+		3) Make sure The sensor server is running , sensor clients are running , zookeper and kafka processes are running 
 		
+		4) RUN 
+			
+			node index.js
 		
 		
 
