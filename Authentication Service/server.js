@@ -36,7 +36,7 @@ app.post('/loginUser', (req, res) => {
 
   connectToDB();
 
-  userModel.findOne({ username: username, password: password, type:"user"}, (err, user) => {
+  userModel.findOne({ username: username, password: password, type: "user" }, (err, user) => {
     if (err) {
       console.log(err);
     }
@@ -72,7 +72,7 @@ app.post('/loginAdmin', (req, res) => {
 
   connectToDB();
 
-  userModel.findOne({ username: username, password: password, type:"admin"}, (err, user) => {
+  userModel.findOne({ username: username, password: password, type: "admin" }, (err, user) => {
     if (err) {
       console.log(err);
     }
@@ -111,8 +111,7 @@ app.post('/register', (req, res) => {
     return res.status(404).send('Error in JSON body');
   }
 
-  if(type != "admin" && type != "user")
-  {
+  if (type != "admin" && type != "user") {
     return res.status(406).send('incorrect type in JSON body. must be either "admin" or "user"');
   }
 
@@ -161,23 +160,34 @@ app.post('/register', (req, res) => {
 });
 
 /**
-  * Get all emails
+  * Get email of user
   * POST to http://localhost:8080/getEmails
+  * with optional JSON keys: "username"
   */
 app.post('/getEmails', (req, res) => {
-
+  
+  let username = req.body.username;
   connectToDB();
 
-  userModel.find({}, '-_id email', function (err, user) {
+  userModel.find({}, '-_id username email', function (err, user) {
     if (err) {
       console.log(err);
     }
 
     let emails = [];
 
-    user.forEach(element => {
-      emails.push(element.email);
-    });
+    if (!(username)) {
+      user.forEach(element => {
+        emails.push(element.email);
+      });
+    }
+    else {
+      user.forEach(element => {
+        if (element.username == username) {
+          emails.push(element.email);
+        }
+      });
+    }
 
     return res.status(200).send(emails);
 
@@ -188,23 +198,34 @@ app.post('/getEmails', (req, res) => {
 
 
 /**
-  * Get all phone numbers
+  * Get phoneNumber of user
   * POST to http://localhost:8080/getPhoneNumbers
+  * with optional JSON keys: "username"
   */
 app.post('/getPhoneNumbers', (req, res) => {
 
+  let username = req.body.username;
   connectToDB();
 
-  userModel.find({}, '-_id phoneNumber', function (err, user) {
+  userModel.find({}, '-_id username phoneNumber', function (err, user) {
     if (err) {
       console.log(err);
     }
 
     let numbers = [];
 
-    user.forEach(element => {
-      numbers.push(element.phoneNumber);
-    });
+    if (!(username)) {
+      user.forEach(element => {
+        numbers.push(element.phoneNumber);
+      });
+    }
+    else {
+      user.forEach(element => {
+        if (element.username == username) {
+          numbers.push(element.phoneNumber);
+        }
+      });
+    }
 
     return res.status(200).send(numbers);
 
@@ -221,7 +242,7 @@ app.post('/getPhoneNumbers', (req, res) => {
 });
 
 
-app.post('/checkAuthenticationAlive',(req,res) => {
+app.post('/checkAuthenticationAlive', (req, res) => {
   return res.status(200).send();
 });
 
