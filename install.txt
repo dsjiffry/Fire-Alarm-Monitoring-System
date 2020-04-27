@@ -14,3 +14,82 @@ How to run this System:
 	go to \RMI\client
 	run " mvn exec:java -Dexec.mainClass="forms.Login" " in cmd.
 	Login using the username and password as "admin".
+	
+How to Run Sensor Service
+	
+	Pre Requisites :
+		Docker version 19.x 
+		docker-compose version 1.25.x
+		Node v13.6.x
+		npm 6.13.6
+	
+	Before Installation
+		
+		make Sure their are no running docker container instances of 
+		apache kafka, zookeper or mongoDB
+		
+		If exist stop containers using following steps 
+		
+		1) get contianer ID of each container using 
+		
+			docker ps -a 
+			
+		2) then stop containers
+		
+			docker stop <zookeper_id> <kafka_id> <mongo_id>
+		
+		3) Remove containers 
+			
+			docker rm <zookeper_id> <kafka_id> <mongo_id>
+	
+	Installation 
+	
+		1) Navigate into the Sensor_Service directory in a command line
+		
+		2) Run The docker compose file 
+			
+			docker-compose -f zk-single-kafka-single.yml up
+			
+	Checking 
+	
+		1) docker ps -a 
+			There should be 3 containers , 
+				zookeper , kafka and mongodb
+		
+	Running The Sensor Server
+	
+		1) Navigate into the Sensor_Service directory in a command line
+		
+		2) RUN npm install
+			
+		3) RUN npm start
+		
+		
+How to Run Sensors (Sensor Clients)
+
+		1) Navigate into the Sensor_Service/sensor_client directory in a command line
+		
+		2) Run npm install
+		
+		3) To run a sensor with specific SensorID
+		
+			node sensor_client.js <SensorID>
+			
+			eg: node sensor_client sensor1
+
+How to Run Sensor Monitering Service (The service that monitors and Sends Emails and SMS)
+	
+			
+		1) Navigate into the Sensor_Service/sensor_monitoring directory in a command line
+		
+		2) Run npm install
+		
+		3) Make sure The sensor server is running , sensor clients are running , zookeper and kafka processes are running 
+		
+		4) RUN 
+			
+			node index.js
+		
+		
+
+	

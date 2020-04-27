@@ -250,7 +250,14 @@ app.post('/checkAuthenticationAlive', (req, res) => {
  * Connecting to the Database
  */
 function connectToDB() {
-  mongoose.connect(url)
+  mongoose.connect(url,
+  	{ 
+      useNewUrlParser: true ,
+      "auth": {"authSource":"admin"} ,
+      "user": "root",
+      "pass": "rootpassword"
+    }
+  )
     .then(function () {
       console.log('Connected to MongoDB');
     })
