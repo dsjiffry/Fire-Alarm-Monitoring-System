@@ -82,6 +82,40 @@ router.get("/getSensorsByUsername/:username", async (req, res) => {
    
 } )
 
+router.put("/updateSensorStatus/:sensorUID", async (req, res) => {
+    let sensorUID = req.params.sensorUID;
+    let status = req.query.status;
+
+
+    Sensor.exists({ sensorUID: sensorUID }, async function (err, result) {
+
+        console.log(err, "error")
+        console.log(result, "result")
+
+        if (result === false) {
+            res.status(404)
+
+        }
+        else {
+            // let doc = await Sensor.findOneAndUpdate({ sensorUID: req.body.sensorUID }, sensor)
+            const doc = await Sensor.findOne({ sensorUID: sensorUID });
+            doc.status = status
+
+            await doc.save();
+
+            res.status(200);
+            //res.send(sensor);
+
+        }
+        const sensor = await Sensor.findOne({ sensorUID: req.body.sensorUID });
+        res.send(sensor);
+
+
+    })
+
+
+})
+
 
 router.put("/updateSensor", async (req, res) => {
 
