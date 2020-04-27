@@ -20,7 +20,9 @@ let smsCache = [];
 app.post('/emailAlert', async (req, res) => {
   let message = req.body.message; // Body of the Email
   let emailAddresses;
-
+	
+  	
+	
   if (!(message)) {
     return res.status(404).send('Error in JSON body');
   }

@@ -21,7 +21,6 @@ const getAllSensors = async () =>
 
 
 
-
 getAllSensors().then(
 
     (data) => { 
@@ -30,8 +29,8 @@ getAllSensors().then(
 
         data.forEach(element => {
 
-                console.log(element.sensorUID, element.username)
-                kafkaListners({topic:element.sensorUID, fromBeginning: false} , element.username )
+                //console.log(element.sensorUID, element.username)
+                kafkaListners({topic:element.sensorUID, fromBeginning: false} , element.username  , element.floor , element.room , element.sensorType)
               
         });
        
@@ -40,9 +39,13 @@ getAllSensors().then(
 
 
 
-async function kafkaListners(topic_array,username) 
+
+
+async function kafkaListners(topic_array,username,floorNum, roomNum , type) 
 {
     console.log("Called KafkaListner Method")
+
+    const url2 = "http://localhost:8081/emailAlertToUser";
 
     const consumer = kafka.consumer({ groupId: `${topic_array.topic}-alert-monitor` })
     await consumer.connect();
@@ -58,14 +61,19 @@ async function kafkaListners(topic_array,username)
             //         value: message.value.toString(),
             //     })
             // console.log("************\n")
-            //console.log(JSON.parse(message.value.toString()).reading, topic , username)
+            // console.log(JSON.parse(message.value.toString()).reading, topic , username)
 
             let reading = Number(JSON.parse(message.value.toString()).reading);
             let timeStamp =  new Date(JSON.parse(message.value.toString()).timeStamp);
 
             if( reading > 5  )
             {
-                    console.log(`Alert ${username} about sensor ${topic} of reading ${JSON.parse(message.value.toString()).reading} on time ${timeStamp.toDateString()} ${timeStamp.toTimeString()}`)
+                    let msg = `${username} Your ${type} sensor ${topic} on floor ${floorNum} room ${roomNum} has shown a reading of ${JSON.parse(message.value.toString()).reading} on ${timeStamp.toDateString()} ${timeStamp.toTimeString()}`;
+                    //console.log(JSON.stringify({"username":username , "message": msg}) , url2);
+                    fetch(url2, { method:"POST" , body: JSON.stringify({"username": `${username}` , "message": `${msg}`}) , 
+                    				headers: {      									
+      									'Content-Type': 'application/JSON'
+    },} ).then( res => console.log(res.status))
             }
         },
       })
