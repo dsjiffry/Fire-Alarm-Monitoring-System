@@ -24,8 +24,6 @@ const getAllSensors = async () =>
 
 getAllSensors().then(
 
-    
-
     (data) => { 
 
         let topics = [];
