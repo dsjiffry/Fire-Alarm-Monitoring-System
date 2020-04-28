@@ -27,7 +27,7 @@ import com.google.gson.Gson;
 
 public class Server extends UnicastRemoteObject implements ServerInterface {
 
-	private final String SENSOR_API_URL = "https://webhook.site/1c16714d-4818-48b4-be4b-cfdda9bd05b8";
+	private final String SENSOR_API_URL = "http://localhost:5000/api";
 	private final String AUTHENTICATION_BASE_URL = "http://localhost:8080";
 
 	public Server() throws RemoteException {
@@ -52,6 +52,9 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 			registry.bind("rmiServer", server);
 
 			System.out.println("Service started....");
+
+			new Server().createUser();
+
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}
@@ -63,11 +66,14 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 	 * @return true if sucessful
 	 */
 	@Override
-	public boolean addSensor(int floorNumber, int roomNumber) {
+	public boolean addSensor(int floorNumber, int roomNumber, String username) {
 		Map<String, String> body = new HashMap<>();
-		body.put("floorNumber", String.valueOf(floorNumber));
-		body.put("roomNumber", String.valueOf(roomNumber));
-		return makeRequest(body, "POST", SENSOR_API_URL);
+		body.put("username", username);
+		body.put("sensorUID", "sensor" + floorNumber + roomNumber);
+		body.put("floor", String.valueOf(floorNumber));
+		body.put("room", String.valueOf(roomNumber));
+		body.put("sensorType", "smoke");
+		return makeRequest(body, "POST", SENSOR_API_URL + "/registerSensor");
 	}
 
 	/**
@@ -78,9 +84,8 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 	@Override
 	public boolean removeSensor(int floorNumber, int roomNumber) throws RemoteException {
 		Map<String, String> body = new HashMap<>();
-		body.put("floorNumber", String.valueOf(floorNumber));
-		body.put("roomNumber", String.valueOf(roomNumber));
-		return makeRequest(body, "DELETE", SENSOR_API_URL); //TODO: add params to url
+		String sensorUID = "sensor" + floorNumber + roomNumber;
+		return makeRequest(body, "DELETE", SENSOR_API_URL + "/deleteSensor?sensorUID=" + sensorUID);
 	}
 
 	/**
@@ -91,10 +96,15 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 	@Override
 	public boolean changeState(int floorNumber, int roomNumber, boolean state) throws RemoteException {
 		Map<String, String> body = new HashMap<>();
-		body.put("floorNumber", String.valueOf(floorNumber));
-		body.put("roomNumber", String.valueOf(roomNumber));
-		body.put("state", String.valueOf(state));
-		return makeRequest(body, "PUT", SENSOR_API_URL);
+		String sensorUID = "sensor" + floorNumber + roomNumber;
+		String status;
+		if (state) {
+			status = "online";
+		} else {
+			status = "offline";
+		}
+
+		return makeRequest(body, "PUT", SENSOR_API_URL + "/updateSensorStatus/" + sensorUID + "?status=" + status);
 	}
 
 	/**
@@ -103,11 +113,11 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 	 * @return sensor Arraylist of the sensor details
 	 */
 	@Override
-	public ArrayList<Sensor> viewSensors() throws RemoteException {
+	public ArrayList<Sensor> viewSensors(String username) throws RemoteException {
 		ArrayList<Sensor> sensors = new ArrayList<>();
 
 		HttpClient httpClient = HttpClientBuilder.create().build();
-		HttpGet get = new HttpGet(SENSOR_API_URL);
+		HttpGet get = new HttpGet(SENSOR_API_URL + "/getSensorsByUsername/" + username);
 		get.setHeader("Content-type", "application/json");
 		get.setHeader("Accept", "application/json");
 
@@ -122,7 +132,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 			e.printStackTrace();
 		}
 
-		for (String string : responseString.split("\".*\":\\s\\{")) {
+		for (String string : responseString.replaceAll("[\\[\\]]", "").split("},")) {
 			string = string.replaceAll("[{}]|(\\r\\n|\\r|\\n).*}.*,", "");
 			if (string.trim().length() == 0) {
 				continue;
@@ -130,13 +140,16 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 			string = "{\n" + string.replace("},", "").trim() + "\n}";
 
 			Sensor sensor = new Gson().fromJson(string, Sensor.class);
-			sensors.add(sensor);
+			if (sensor.getRoom() != 0 && sensor.getFloor() != 0) {
+				sensors.add(sensor);
+			}
 		}
 		return sensors;
 	}
 
 	/**
 	 * Checks the login with the authorization api
+	 * 
 	 * @param username
 	 * @param password
 	 * @return true if valid login
@@ -146,26 +159,32 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 		Map<String, String> body = new HashMap<>();
 		body.put("username", String.valueOf(username));
 		body.put("password", String.valueOf(password));
-		return makeRequest(body, "POST", AUTHENTICATION_BASE_URL+"/loginAdmin");
+		return makeRequest(body, "POST", AUTHENTICATION_BASE_URL + "/loginAdmin");
 	}
 
 	/**
 	 * Makes sure the authorization server is reachable
+	 * 
 	 * @return true if reachable
 	 */
 	@Override
 	public boolean checkAuthenticationServer() throws RemoteException {
 		Map<String, String> body = new HashMap<>();
-		return makeRequest(body, "POST", AUTHENTICATION_BASE_URL+"/checkAuthenticationAlive");
+		return makeRequest(body, "POST", AUTHENTICATION_BASE_URL + "/checkAuthenticationAlive");
 	}
 
-
-
-
-
-
-
-
+	/**
+	 * creating the default user for testing
+	 */
+	public void createUser() {
+		Map<String, String> body = new HashMap<>();
+		body.put("username", "admin");
+		body.put("password", "admin");
+		body.put("email", "admin@test.com");
+		body.put("phoneNumber", "0112345678");
+		body.put("type", "admin");
+		makeRequest(body, "POST", "http://localhost:8080/register");
+	}
 
 	/**
 	 * Used by add/remove/change methods to make requests.

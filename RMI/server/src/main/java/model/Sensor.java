@@ -6,31 +6,37 @@ public class Sensor implements Serializable
 {	
 	private static final long serialVersionUID = 1L;
 	
-	private String name;
-	private boolean active = true;
-	private int floorNumber;
-	private int roomNumber;
+	private String username;
+	private String sensorUID;
+	private String active = "online";
+	private int floor;
+	private int room;
+	private String sensorType;
 	private int smokeLevel = 0;
 	private int co2Level = 0;
 	
 	public Sensor(int floorNumber, int roomNumber) 
 	{
-		this.setFloorNumber(floorNumber);
-		this.setRoomNumber(roomNumber);
+		this.setFloor(floorNumber);
+		this.setRoom(roomNumber);
 		
-		setName(String.valueOf(floorNumber) + String.valueOf(roomNumber));		
+		setSensorUID(String.valueOf(floorNumber) + String.valueOf(roomNumber));		
 	}
 
 	public boolean isActive() {
-		return active;
+		if(active.equalsIgnoreCase("online"))
+		{
+			return true;
+		}
+		return false;
 	}
 
 	public void setActive() {
-		this.active = true;
+		this.active = "online";
 	}
 	
 	public void setInactive() {
-		this.active = false;
+		this.active = "offline";
 	}
 
 	public int getSmokeLevel() {
@@ -49,30 +55,48 @@ public class Sensor implements Serializable
 		this.co2Level = co2Level;
 	}
 
-	public int getFloorNumber() {
-		return floorNumber;
+	public int getFloor() {
+		return floor;
 	}
 
-	public void setFloorNumber(int floorNumber) {
-		this.floorNumber = floorNumber;
+	public void setFloor(int floorNumber) {
+		this.floor = floorNumber;
 	}
 
-	public String getName() {
-		return name;
+	public String getSensorUID() {
+		return sensorUID;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setSensorUID(String sensorUID) {
+		this.sensorUID = sensorUID;
 	}
 
-	public int getRoomNumber() {
-		return roomNumber;
+	public int getRoom() {
+		return room;
 	}
 
-	public void setRoomNumber(int roomNumber) {
-		this.roomNumber = roomNumber;
+	public void setRoom(int roomNumber) {
+		this.room = roomNumber;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getSensorType() {
+		return sensorType;
+	}
+
+	public void setSensorType(String sensorType) {
+		this.sensorType = sensorType;
 	}
 	
+	
+
 	
 	
 }
