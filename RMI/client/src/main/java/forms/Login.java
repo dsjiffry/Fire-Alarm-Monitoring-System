@@ -40,7 +40,7 @@ public class Login extends javax.swing.JFrame implements Runnable {
 
     @Override
     public void run() {
-        Client tclient = new Client();
+        Client tclient = new Client("");
         while (true) {
             jLabel1.setText("trying to reach server...");
             if (!tclient.checkAuthenticationServer()) {
@@ -215,7 +215,7 @@ public class Login extends javax.swing.JFrame implements Runnable {
 
         String username = usernameInput.getText();
         String password = new String(passwordInput.getPassword());
-        Client client = new Client();
+        Client client = new Client(username);
 
         if (client.login(username, password)) {
             for (float i = 1.0f; i > 0.0f; i -= 0.2f) { //Fade out effect
@@ -227,7 +227,7 @@ public class Login extends javax.swing.JFrame implements Runnable {
             }
             loggedIn = true;
             this.setVisible(false);
-            MainPage mainPage = new MainPage();
+            MainPage mainPage = new MainPage(username);
             mainPage.setVisible(true);
         } else {
             loggedIn = false;

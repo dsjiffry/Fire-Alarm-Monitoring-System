@@ -11,8 +11,15 @@ import model.Sensor;
 public class Client {
 
     private ServerInterface service;
+    private final String USERNAME;
 
-    public Client() {
+    private Client() {
+        USERNAME = "";
+    }
+
+    public Client(String username) {
+
+        USERNAME = username;
 
         System.setProperty("java.security.policy", "file:allowall.policy");
 
@@ -36,7 +43,7 @@ public class Client {
      */
     public boolean addSensor(int floorNumber, int roomNumber) {
         try {
-            return service.addSensor(floorNumber, roomNumber);
+            return service.addSensor(floorNumber, roomNumber, USERNAME);
         } catch (RemoteException ex) {
             return false;
         }
@@ -47,7 +54,8 @@ public class Client {
      *
      * @param floorNumber
      * @param roomNumber
-     * @param state true will make the sensor active, false will make it inactive
+     * @param state true will make the sensor active, false will make it
+     * inactive
      * @return true if request was successful
      */
     public boolean changeState(int floorNumber, int roomNumber, boolean state) {
@@ -78,14 +86,14 @@ public class Client {
      *
      * @return ArrayList of all the Sensors
      */
-    public ArrayList<Sensor> getSensors(){
+    public ArrayList<Sensor> getSensors() {
         try {
-            return service.viewSensors();
+            return service.viewSensors(USERNAME);
         } catch (RemoteException ignored) {
         }
         return new ArrayList<>();
     }
-    
+
     /**
      * Will check the login of the user
      *
@@ -100,8 +108,8 @@ public class Client {
             return false;
         }
     }
-    
-      /**
+
+    /**
      * Will check if the authorization server is reachable
      *
      * @return true if reachable

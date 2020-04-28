@@ -39,30 +39,36 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
     private Vector<Vector<Object>> items;
     private Alert alert;
     private Client rmiclient;
+    private final String USERNAME;
 
     /**
      * Creates new form MainPage
      */
-    public MainPage() {
-        
+    private MainPage() {
+        USERNAME = "";
+    }
+
+    public MainPage(String username) {
+
 //        if(!Login.loggedIn)
 //        {
 //            Login.main(new String[] {});
 //            return;
 //        }
+        USERNAME = username;
 
         try {
             UIManager.setLookAndFeel(new MaterialLookAndFeel());
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
-        
+
         columns = new Vector<>();
         columns.add("Floor Number");
         columns.add("Room Number");
         columns.add("Active");
 
-        rmiclient = new Client();
+        rmiclient = new Client(USERNAME);
 
         initComponents();
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -83,7 +89,7 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
 
                 if (floorNumber > 0) {
                     for (Sensor sensor : sensors) {
-                        if (sensor.getFloorNumber() == floorNumber) {
+                        if (sensor.getFloor() == floorNumber) {
                             if (sensor.isActive()) {
                                 activeToggle.setSelected(true);
                             } else {
@@ -102,7 +108,7 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
 
     @Override
     public void run() {
-        Client tclient = new Client();
+        Client tclient = new Client(USERNAME);
         while (true) //Updating sensors every 30s
         {
             tableMessage.setText("updating table...");
@@ -115,39 +121,33 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
                 continue;
             }
 
-            items = new Vector<>();
-            List<String> dropDownList = new ArrayList<>();
-            dropDownList.add("All");
-
-            for (Sensor sensor : sensors) {
-                Vector<Object> row = new Vector<>();//row
-
-                row.add(sensor.getFloorNumber());
-                dropDownList.add(String.valueOf(sensor.getFloorNumber()));
-                row.add(sensor.getRoomNumber());
-                if (sensor.isActive()) {
-                    row.add("Active");
-                } else {
-                    row.add("Inactive");
-                }
-                items.add(row);
-            }
-
             UpdateTable();
             jTable1.setEnabled(true);
 
-            // Populating the Drop down list
-            int selectedRow = jComboBox1.getSelectedIndex();
-            jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(dropDownList.toArray(new String[0])));
-            jComboBox1.setSelectedIndex(selectedRow);
-
-            tableMessage.setText("");
             threadSleep(15000); // sleep for 15s
         }
 
     }
 
     public void UpdateTable() {
+        items = new Vector<>();
+        List<String> dropDownList = new ArrayList<>();
+        dropDownList.add("All");
+
+        for (Sensor sensor : sensors) {
+            Vector<Object> row = new Vector<>();//row
+
+            row.add(sensor.getFloor());
+            dropDownList.add(String.valueOf(sensor.getFloor()));
+            row.add(sensor.getRoom());
+            if (sensor.isActive()) {
+                row.add("Active");
+            } else {
+                row.add("Inactive");
+            }
+            items.add(row);
+        }
+
         int selectedRow = jComboBox1.getSelectedIndex();
         Vector<Vector<Object>> filtereditems = new Vector<>();
 
@@ -155,11 +155,11 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
             int floorNumber = Integer.valueOf(jComboBox1.getItemAt(selectedRow));
 
             for (Sensor sensor : sensors) {
-                if (sensor.getFloorNumber() == floorNumber) {
+                if (sensor.getFloor() == floorNumber) {
                     Vector<Object> row = new Vector<>();//row
 
-                    row.add(sensor.getFloorNumber());
-                    row.add(sensor.getRoomNumber());
+                    row.add(sensor.getFloor());
+                    row.add(sensor.getRoom());
                     if (sensor.isActive()) {
                         row.add("Active");
                     } else {
@@ -192,6 +192,13 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
                 return canEdit[columnIndex];
             }
         });
+
+        // Populating the Drop down list
+        selectedRow = jComboBox1.getSelectedIndex();
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(dropDownList.toArray(new String[0])));
+        jComboBox1.setSelectedIndex(selectedRow);
+
+        tableMessage.setText("");
 
     }
 
@@ -591,6 +598,12 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
         }
 
         if (rmiclient.addSensor(floorNumber, roomNumber)) {
+            try {
+                sensors = rmiclient.getSensors();
+                UpdateTable();
+            } catch (Exception e) { // happens if not online. So we try again in 5s
+                tableMessage.setText("Please make sure that you are online.");
+            }
             alert = new Alert("Sensor added sucessfully");
         } else {
             alert = new Alert("Error when adding Sensor");
@@ -606,7 +619,7 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
             int floorNumber = (int) jTable1.getValueAt(selectedRow, 0);
             int roomNumber = (int) jTable1.getValueAt(selectedRow, 1);
             for (Sensor sensor : sensors) {
-                if (sensor.getFloorNumber() == floorNumber) {
+                if (sensor.getFloor() == floorNumber) {
                     boolean state = false;
                     if (jTable1.getValueAt(selectedRow, 2).toString().equalsIgnoreCase("Inactive")) {
                         state = true;
@@ -646,8 +659,13 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
 
             case JOptionPane.YES_OPTION:
                 if (rmiclient.removeSensor(floorNumber, roomNumber)) {
+                    try {
+                        sensors = rmiclient.getSensors();
+                        UpdateTable();
+                    } catch (Exception e) { // happens if not online. So we try again in 5s
+                        tableMessage.setText("Please make sure that you are online.");
+                    }
                     alert = new Alert("Sensor deleted sucessfully");
-                    UpdateTable();
                 } else {
                     alert = new Alert("Error Deleting Server");
                 }
@@ -663,8 +681,6 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
             UpdateTable();
         });
     }//GEN-LAST:event_jComboBox1ActionPerformed
-
-
 
     public void threadSleep(long millis) {
         try {
