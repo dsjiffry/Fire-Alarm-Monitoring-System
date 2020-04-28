@@ -75,7 +75,7 @@ How to Run Sensors (Sensor Clients)
 		
 			node sensor_client.js <SensorID>
 			
-			eg: node sensor_client sensor1
+			eg: node senor_client sensor1
 
 How to Run Sensor Monitering Service (The service that monitors and Sends Emails and SMS)
 	
