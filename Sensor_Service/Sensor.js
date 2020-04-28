@@ -5,7 +5,8 @@ const schema = mongoose.Schema({
   sensorUID : String,
   floor: Number,
   room: Number,
-  sensorType: String
+  sensorType: String,
+  status : String
 })
 
 module.exports = mongoose.model("Sensor", schema)
