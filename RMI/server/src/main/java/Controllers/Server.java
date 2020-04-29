@@ -66,13 +66,13 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 	 * @return true if sucessful
 	 */
 	@Override
-	public boolean addSensor(int floorNumber, int roomNumber, String username) {
+	public boolean addSensor(int floorNumber, int roomNumber, String username, String sensorType) {
 		Map<String, String> body = new HashMap<>();
 		body.put("username", username);
 		body.put("sensorUID", "sensor" + floorNumber + roomNumber);
 		body.put("floor", String.valueOf(floorNumber));
 		body.put("room", String.valueOf(roomNumber));
-		body.put("sensorType", "smoke");
+		body.put("sensorType", sensorType);
 		return makeRequest(body, "POST", SENSOR_API_URL + "/registerSensor");
 	}
 

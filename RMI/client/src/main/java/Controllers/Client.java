@@ -39,11 +39,12 @@ public class Client {
      *
      * @param floorNumber
      * @param roomNumber
+     * @param sensorType  "smoke" or "co2"
      * @return true if request was successful
      */
-    public boolean addSensor(int floorNumber, int roomNumber) {
+    public boolean addSensor(int floorNumber, int roomNumber, String sensorType) {
         try {
-            return service.addSensor(floorNumber, roomNumber, USERNAME);
+            return service.addSensor(floorNumber, roomNumber, USERNAME, sensorType);
         } catch (RemoteException ex) {
             return false;
         }

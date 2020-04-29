@@ -64,9 +64,10 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
         }
 
         columns = new Vector<>();
-        columns.add("Floor Number");
-        columns.add("Room Number");
+        columns.add("Floor");
+        columns.add("Room");
         columns.add("Active");
+        columns.add("Type");
 
         rmiclient = new Client(USERNAME);
 
@@ -103,6 +104,7 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
                 activeToggle.setEnabled(false);
             }
         });
+        
 
     }
 
@@ -145,6 +147,7 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
             } else {
                 row.add("Inactive");
             }
+            row.add(sensor.getSensorType());
             items.add(row);
         }
 
@@ -165,6 +168,7 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
                     } else {
                         row.add("Inactive");
                     }
+                    row.add(sensor.getSensorType());
                     filtereditems.add(row);
                 }
             }
@@ -178,10 +182,10 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
                 filtereditems, columns
         ) {
             Class[] types = new Class[]{
-                java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean[]{
-                false, false, false
+                false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -235,6 +239,8 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
         jLabel2 = new javax.swing.JLabel();
         floorNumberInput = new javax.swing.JFormattedTextField();
         roomNumberInput = new javax.swing.JFormattedTextField();
+        jLabel5 = new javax.swing.JLabel();
+        sensorTypeDropDown = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -366,20 +372,20 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
         jTable1.setForeground(new java.awt.Color(255, 255, 255));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Floor Number", "Room Number", "Active"
+                "Floor Number", "Room Number", "Active", "Type"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -512,36 +518,51 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
         roomNumberInput.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
         roomNumberInput.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
 
+        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel5.setText("Type:");
+
+        MaterialComboBoxUI mtcbUI2 = (MaterialComboBoxUI)MaterialComboBoxUI.createUI(sensorTypeDropDown);
+        sensorTypeDropDown.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        sensorTypeDropDown.setForeground(new java.awt.Color(255, 255, 255));
+        sensorTypeDropDown.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "smoke", "co2" }));
+        mtcbUI2.installUI(sensorTypeDropDown);
+        sensorTypeDropDown.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sensorTypeDropDownActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout addSensorLayout = new javax.swing.GroupLayout(addSensor);
         addSensor.setLayout(addSensorLayout);
         addSensorLayout.setHorizontalGroup(
             addSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(addSensorLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(addSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(addSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(addSensorLayout.createSequentialGroup()
-                        .addGroup(addSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(addSensorLayout.createSequentialGroup()
-                                .addGap(1, 1, 1)
-                                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(595, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, addSensorLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(addSensorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(314, 314, 314))))
+                        .addGap(1, 1, 1)
+                        .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, addSensorLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addGap(0, 240, Short.MAX_VALUE)
                 .addGroup(addSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
-                    .addComponent(jLabel2))
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(addSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(floorNumberInput, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(roomNumberInput, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(addSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jSeparator2, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
+                    .addComponent(floorNumberInput, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
+                    .addComponent(roomNumberInput, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
+                    .addComponent(sensorTypeDropDown, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(237, 237, 237))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, addSensorLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(addSensorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(307, 307, 307))
         );
         addSensorLayout.setVerticalGroup(
             addSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -556,15 +577,19 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
                     .addComponent(floorNumberInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(1, 1, 1)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(44, 44, 44)
+                .addGap(18, 18, 18)
                 .addGroup(addSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(roomNumberInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, 0)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(47, 47, 47)
+                .addGap(18, 18, 18)
+                .addGroup(addSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(sensorTypeDropDown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
                 .addComponent(addSensorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(103, Short.MAX_VALUE))
+                .addGap(37, 37, 37))
         );
 
         jTabbedPane1.addTab("Add Sensor", addSensor);
@@ -583,6 +608,20 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
     private void addSensorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addSensorButtonActionPerformed
         int floorNumber = -1;
         int roomNumber = -1;
+         String sensorType;
+        switch (sensorTypeDropDown.getSelectedIndex()) {
+            case 0:
+                sensorType = "smoke";
+                break;
+            case 1:
+                sensorType = "co2";
+                break;
+            default:
+                alert = new Alert("Select Sensor Type");
+                return;
+        }
+        
+        
 
         try {
             floorNumber = Integer.valueOf(floorNumberInput.getText());
@@ -597,7 +636,7 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
             return;
         }
 
-        if (rmiclient.addSensor(floorNumber, roomNumber)) {
+        if (rmiclient.addSensor(floorNumber, roomNumber, sensorType)) {
             try {
                 sensors = rmiclient.getSensors();
                 UpdateTable();
@@ -691,6 +730,10 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
         });
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
+    private void sensorTypeDropDownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sensorTypeDropDownActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_sensorTypeDropDownActionPerformed
+
     public void threadSleep(long millis) {
         try {
             Thread.sleep(millis);
@@ -711,6 +754,7 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
@@ -723,6 +767,7 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
     private java.awt.Label label3;
     private javax.swing.JPanel manageSensor;
     private javax.swing.JFormattedTextField roomNumberInput;
+    private javax.swing.JComboBox<String> sensorTypeDropDown;
     private javax.swing.JLabel tableMessage;
     // End of variables declaration//GEN-END:variables
 
