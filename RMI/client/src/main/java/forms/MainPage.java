@@ -85,18 +85,15 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
 
             if (jTable1.getSelectedRow() > -1) {
                 int floorNumber = (int) jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+                String state = (String) jTable1.getValueAt(jTable1.getSelectedRow(), 2);
                 deleteSensorButton.setEnabled(true);
                 activeToggle.setEnabled(true);
 
                 if (floorNumber > 0) {
-                    for (Sensor sensor : sensors) {
-                        if (sensor.getFloor() == floorNumber) {
-                            if (sensor.isActive()) {
-                                activeToggle.setSelected(true);
-                            } else {
-                                activeToggle.setSelected(false);
-                            }
-                        }
+                    if (state.equalsIgnoreCase("active")) {
+                        activeToggle.setSelected(true);
+                    } else {
+                        activeToggle.setSelected(false);
                     }
                 }
             } else {
@@ -104,7 +101,6 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
                 activeToggle.setEnabled(false);
             }
         });
-        
 
     }
 
@@ -140,7 +136,9 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
             Vector<Object> row = new Vector<>();//row
 
             row.add(sensor.getFloor());
-            dropDownList.add(String.valueOf(sensor.getFloor()));
+            if (!dropDownList.contains(String.valueOf(sensor.getFloor()))) {
+                dropDownList.add(String.valueOf(sensor.getFloor()));
+            }
             row.add(sensor.getRoom());
             if (sensor.isActive()) {
                 row.add("Active");
@@ -608,7 +606,7 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
     private void addSensorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addSensorButtonActionPerformed
         int floorNumber = -1;
         int roomNumber = -1;
-         String sensorType;
+        String sensorType;
         switch (sensorTypeDropDown.getSelectedIndex()) {
             case 0:
                 sensorType = "smoke";
@@ -620,8 +618,6 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
                 alert = new Alert("Select Sensor Type");
                 return;
         }
-        
-        
 
         try {
             floorNumber = Integer.valueOf(floorNumberInput.getText());
@@ -659,26 +655,23 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
             activeToggle.setEnabled(false);
             int floorNumber = (int) jTable1.getValueAt(selectedRow, 0);
             int roomNumber = (int) jTable1.getValueAt(selectedRow, 1);
-            for (Sensor sensor : sensors) {
-                if (sensor.getFloor() == floorNumber) {
-                    boolean state = false;
-                    if (jTable1.getValueAt(selectedRow, 2).toString().equalsIgnoreCase("Inactive")) {
-                        state = true;
-                    }
-                    boolean result = rmiclient.changeState(floorNumber, roomNumber, state);
-                    if (!result) {
-                        alert = new Alert("Unable to change Sensor state");
-                    } else {
-                        try {
-                            sensors = rmiclient.getSensors();
-                            UpdateTable();
-                        } catch (Exception e) { // happens if not online.
-                            tableMessage.setText("Please make sure that you are online.");
-                        }
-                    }
+            String sensorType = (String) jTable1.getValueAt(jTable1.getSelectedRow(), 3);
+
+            boolean state = false;
+            if (jTable1.getValueAt(selectedRow, 2).toString().equalsIgnoreCase("Inactive")) {
+                state = true;
+            }
+            boolean result = rmiclient.changeState(floorNumber, roomNumber, state, sensorType);
+            if (!result) {
+                alert = new Alert("Unable to change Sensor state");
+            } else {
+                try {
+                    sensors = rmiclient.getSensors();
+                    UpdateTable();
+                } catch (Exception e) { // happens if not online.
+                    tableMessage.setText("Please make sure that you are online.");
                 }
             }
-            UpdateTable();
             activeToggle.setEnabled(true);
         }
     }//GEN-LAST:event_activeToggleActionPerformed
@@ -691,6 +684,7 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
 
         int floorNumber = (int) jTable1.getValueAt(jTable1.getSelectedRow(), 0);
         int roomNumber = (int) jTable1.getValueAt(jTable1.getSelectedRow(), 1);
+        String sensorType = (String) jTable1.getValueAt(jTable1.getSelectedRow(), 3);
 
         UIManager.put("Panel.background", MaterialColors.BLUE_GRAY_800);
         UIManager.put("OptionPane.messageForeground", MaterialColors.WHITE);
@@ -706,7 +700,7 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
                 break;
 
             case JOptionPane.YES_OPTION:
-                if (rmiclient.removeSensor(floorNumber, roomNumber)) {
+                if (rmiclient.removeSensor(floorNumber, roomNumber, sensorType)) {
                     try {
                         sensors = rmiclient.getSensors();
                         UpdateTable();

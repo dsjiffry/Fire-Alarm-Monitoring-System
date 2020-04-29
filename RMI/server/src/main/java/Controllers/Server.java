@@ -69,7 +69,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 	public boolean addSensor(int floorNumber, int roomNumber, String username, String sensorType) {
 		Map<String, String> body = new HashMap<>();
 		body.put("username", username);
-		body.put("sensorUID", "sensor" + floorNumber + roomNumber);
+		body.put("sensorUID", "sensor" + floorNumber + roomNumber + sensorType);
 		body.put("floor", String.valueOf(floorNumber));
 		body.put("room", String.valueOf(roomNumber));
 		body.put("sensorType", sensorType);
@@ -82,9 +82,9 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 	 * @return true if sucessful
 	 */
 	@Override
-	public boolean removeSensor(int floorNumber, int roomNumber) throws RemoteException {
+	public boolean removeSensor(int floorNumber, int roomNumber, String sensorType) throws RemoteException {
 		Map<String, String> body = new HashMap<>();
-		String sensorUID = "sensor" + floorNumber + roomNumber;
+		String sensorUID = "sensor" + floorNumber + roomNumber + sensorType;
 		return makeRequest(body, "DELETE", SENSOR_API_URL + "/deleteSensor?sensorUID=" + sensorUID);
 	}
 
@@ -94,9 +94,9 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 	 * @return true if sucessful
 	 */
 	@Override
-	public boolean changeState(int floorNumber, int roomNumber, boolean state) throws RemoteException {
+	public boolean changeState(int floorNumber, int roomNumber, boolean state, String sensorType) throws RemoteException {
 		Map<String, String> body = new HashMap<>();
-		String sensorUID = "sensor" + floorNumber + roomNumber;
+		String sensorUID = "sensor" + floorNumber + roomNumber + sensorType;
 		String status;
 		if (state) {
 			status = "online";
