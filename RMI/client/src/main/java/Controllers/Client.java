@@ -39,7 +39,7 @@ public class Client {
      *
      * @param floorNumber
      * @param roomNumber
-     * @param sensorType  "smoke" or "co2"
+     * @param sensorType "smoke" or "co2"
      * @return true if request was successful
      */
     public boolean addSensor(int floorNumber, int roomNumber, String sensorType) {
@@ -59,9 +59,9 @@ public class Client {
      * inactive
      * @return true if request was successful
      */
-    public boolean changeState(int floorNumber, int roomNumber, boolean state) {
+    public boolean changeState(int floorNumber, int roomNumber, boolean state, String sensorType) {
         try {
-            return service.changeState(floorNumber, roomNumber, state);
+            return service.changeState(floorNumber, roomNumber, state, sensorType);
         } catch (RemoteException ex) {
             return false;
         }
@@ -74,9 +74,9 @@ public class Client {
      * @param roomNumber
      * @return true if request was successful
      */
-    public boolean removeSensor(int floorNumber, int roomNumber) {
+    public boolean removeSensor(int floorNumber, int roomNumber, String sensorType) {
         try {
-            return service.removeSensor(floorNumber, roomNumber);
+            return service.removeSensor(floorNumber, roomNumber, sensorType);
         } catch (RemoteException ex) {
             return false;
         }

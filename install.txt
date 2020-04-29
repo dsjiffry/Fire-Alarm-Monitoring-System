@@ -1,15 +1,13 @@
 
 How to run this System:
 
-	This requires mongodb as the dabase solution so make sure it is up and running.
-	import the "users.json" through either a GUI or using the command:
-	"mongoimport --db Fire_Alarm_Authentication --collection Users --file users.json"
-	
+	start the docker container by running "docker-compose up" inside the "Authentication Service" folder.
 	Start up the Authentication Service by running "npm install" then "npm start" inside the "Authentication Service" folder
 	Start up the Alert Service by running "npm install" then "npm start" inside the "Alert Service" folder.
 	
 	The rmi registry will be auto started by the RMI server.
 	Start the RMI Server by opening cmd in the root folder and running "java -jar ./RMI/server/target/rmiServer-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
+	If the jar is not found run "mvn clean compile assembly:single" in the RMI/server folder to build it.
 	
 	go to \RMI\client
 	run " mvn exec:java -Dexec.mainClass="forms.Login" " in cmd.
