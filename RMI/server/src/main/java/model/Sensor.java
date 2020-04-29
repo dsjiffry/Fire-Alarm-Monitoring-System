@@ -8,7 +8,7 @@ public class Sensor implements Serializable
 	
 	private String username;
 	private String sensorUID;
-	private String active = "online";
+	private String status = "online";
 	private int floor;
 	private int room;
 	private String sensorType;
@@ -24,7 +24,7 @@ public class Sensor implements Serializable
 	}
 
 	public boolean isActive() {
-		if(active.equalsIgnoreCase("online"))
+		if(status.equalsIgnoreCase("online"))
 		{
 			return true;
 		}
@@ -32,11 +32,11 @@ public class Sensor implements Serializable
 	}
 
 	public void setActive() {
-		this.active = "online";
+		this.status = "online";
 	}
 	
 	public void setInactive() {
-		this.active = "offline";
+		this.status = "offline";
 	}
 
 	public int getSmokeLevel() {

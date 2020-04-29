@@ -170,7 +170,8 @@ router.post("/registerSensor", async (req, res) => {
             sensorUID: req.body.sensorUID,
             floor: req.body.floor,
             room: req.body.room,
-            sensorType: req.body.sensorType
+            sensorType: req.body.sensorType,
+			status: "online"
         })
 
     Sensor.exists({ sensorUID: req.body.sensorUID }, async function (err, result) {
