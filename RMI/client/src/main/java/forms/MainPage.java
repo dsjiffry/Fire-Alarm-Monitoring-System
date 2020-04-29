@@ -601,10 +601,12 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
             try {
                 sensors = rmiclient.getSensors();
                 UpdateTable();
-            } catch (Exception e) { // happens if not online. So we try again in 5s
+            } catch (Exception e) { // happens if not online.
                 tableMessage.setText("Please make sure that you are online.");
             }
             alert = new Alert("Sensor added sucessfully");
+            floorNumberInput.setText("");
+            roomNumberInput.setText("");
         } else {
             alert = new Alert("Error when adding Sensor");
         }
@@ -627,6 +629,13 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
                     boolean result = rmiclient.changeState(floorNumber, roomNumber, state);
                     if (!result) {
                         alert = new Alert("Unable to change Sensor state");
+                    } else {
+                        try {
+                            sensors = rmiclient.getSensors();
+                            UpdateTable();
+                        } catch (Exception e) { // happens if not online.
+                            tableMessage.setText("Please make sure that you are online.");
+                        }
                     }
                 }
             }
@@ -662,7 +671,7 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
                     try {
                         sensors = rmiclient.getSensors();
                         UpdateTable();
-                    } catch (Exception e) { // happens if not online. So we try again in 5s
+                    } catch (Exception e) { // happens if not online.
                         tableMessage.setText("Please make sure that you are online.");
                     }
                     alert = new Alert("Sensor deleted sucessfully");
