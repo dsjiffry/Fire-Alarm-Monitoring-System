@@ -1,93 +1,93 @@
 
-How to run this System:
+How to run the System:
 
-	start the docker container by running "docker-compose up" inside the "Authentication Service" folder.
-	Start up the Authentication Service by running "npm install" then "npm start" inside the "Authentication Service" folder
-	Start up the Alert Service by running "npm install" then "npm start" inside the "Alert Service" folder.
-	
-	The rmi registry will be auto started by the RMI server.
-	Start the RMI Server by opening cmd in the root folder and running "java -jar ./RMI/server/target/rmiServer-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
-	If the jar is not found run "mvn clean compile assembly:single" in the RMI/server folder to build it.
-	
-	go to \RMI\client
-	run " mvn exec:java -Dexec.mainClass="forms.Login" " in cmd.
-	Login using the username and password as "admin".
-	
-How to Run Sensor Service
-	
-	Pre Requisites :
-		Docker version 19.x 
-		docker-compose version 1.25.x
-		Node v13.6.x
-		npm 6.13.6
-	
-	Before Installation
+	Start the Sensor Service
 		
-		make Sure their are no running docker container instances of 
-		apache kafka, zookeper or mongoDB
+		Pre Requisites :
+			Docker version 19.x 
+			docker-compose version 1.25.x
+			Node v13.6.x
+			npm 6.13.6
 		
-		If exist stop containers using following steps 
-		
-		1) get contianer ID of each container using 
-		
-			docker ps -a 
+		Before Installation
 			
-		2) then stop containers
-		
-			docker stop <zookeper_id> <kafka_id> <mongo_id>
-		
-		3) Remove containers 
+			make Sure their are no running docker container instances of 
+			apache kafka, zookeper or mongoDB
 			
-			docker rm <zookeper_id> <kafka_id> <mongo_id>
-	
-	Installation 
-	
-		1) Navigate into the Sensor_Service directory in a command line
-		
-		2) Run The docker compose file 
+			If exist stop containers using following steps 
 			
-			docker-compose -f zk-single-kafka-single.yml up
+			1) get contianer ID of each container using 
 			
-	Checking 
-	
-		1) docker ps -a 
-			There should be 3 containers , 
-				zookeper , kafka and mongodb
-		
-	Running The Sensor Server
-	
-		1) Navigate into the Sensor_Service directory in a command line
-		
-		2) RUN npm install
+				docker ps -a 
+				
+			2) then stop containers
 			
-		3) RUN npm start
+				docker stop <zookeper_id> <kafka_id> <mongo_id>
+			
+			3) Remove containers 
+				
+				docker rm <zookeper_id> <kafka_id> <mongo_id>
 		
+		Installation 
 		
-How to Run Sensors (Sensor Clients)
+			1) Navigate into the Sensor_Service directory in a command line
+			
+			2) Run The docker compose file 
+				
+				docker-compose -f zk-single-kafka-single.yml up
+				
+		Checking 
+		
+			1) docker ps -a 
+				There should be 3 containers , 
+					zookeper , kafka and mongodb
+			
+		Running The Sensor Server
+		
+			1) Navigate into the Sensor_Service directory in a command line
+			
+			2) RUN npm install
+				
+			3) RUN npm start
+			
+			
+	How to Run Sensors (Sensor Clients)
 
-		1) Navigate into the Sensor_Service/sensor_client directory in a command line
-		
-		2) Run npm install
-		
-		3) To run a sensor with specific SensorID
-		
-			node sensor_client.js <SensorID>
+			1) Navigate into the Sensor_Service/sensor_client directory in a command line
 			
-			eg: node senor_client sensor1
+			2) Run npm install
+			
+			3) To run a sensor with specific SensorID
+			
+				node sensor_client.js <SensorID>
+				
+				eg: node senor_client sensor1
 
-How to Run Sensor Monitering Service (The service that monitors and Sends Emails and SMS)
+	How to Run Sensor Monitering Service (The service that monitors and Sends Emails and SMS)
+		
+				
+			1) Navigate into the Sensor_Service/sensor_monitoring directory in a command line
+			
+			2) Run npm install
+			
+			3) Make sure The sensor server is running , sensor clients are running , zookeper and kafka processes are running 
+			
+			4) RUN 
+				
+				node index.js
+
+	Start the Authentication Service:
+		1) start the docker container by running "docker-compose up" inside the "Authentication Service" folder.
+		2) Start up the Authentication Service by running "npm install" then "npm start" inside the "Authentication Service" folder
+		3) Start up the Alert Service by running "npm install" then "npm start" inside the "Alert Service" folder.
 	
+	Start the RMI Server:
+		1) The rmi registry will be auto started by the RMI server.
+		2) Start the RMI Server by opening cmd in the RMI/server/ folder and running "java -jar target/rmiServer-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
+		3) If the jar is not found run "mvn clean compile assembly:single" in the RMI/server folder to build it.
 			
-		1) Navigate into the Sensor_Service/sensor_monitoring directory in a command line
-		
-		2) Run npm install
-		
-		3) Make sure The sensor server is running , sensor clients are running , zookeper and kafka processes are running 
-		
-		4) RUN 
-			
-			node index.js
-		
-		
-
+	Start the RMI Client:
+		1) go to \RMI\client
+		2) run " mvn exec:java -Dexec.mainClass="forms.Login" " in cmd.
+		3) Login using the username and password as "admin".
 	
