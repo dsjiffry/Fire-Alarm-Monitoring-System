@@ -68,6 +68,7 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
         columns.add("Room");
         columns.add("Active");
         columns.add("Type");
+        columns.add("Reading");
 
         rmiclient = new Client(USERNAME);
 
@@ -146,6 +147,15 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
                 row.add("Inactive");
             }
             row.add(sensor.getSensorType());
+
+            String reading;
+            if (sensor.isActive()) {
+                reading = rmiclient.getReading("sensor" + sensor.getFloor() + sensor.getRoom() + sensor.getSensorType());
+            } else {
+                reading = "none";
+            }
+            row.add(reading);
+
             items.add(row);
         }
 
@@ -167,6 +177,15 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
                         row.add("Inactive");
                     }
                     row.add(sensor.getSensorType());
+                    
+                    String reading;
+                    if (sensor.isActive()) {
+                        reading = rmiclient.getReading("sensor" + sensor.getFloor() + sensor.getRoom() + sensor.getSensorType());
+                    } else {
+                        reading = "none";
+                    }
+                    row.add(reading);
+                    
                     filtereditems.add(row);
                 }
             }
@@ -180,10 +199,10 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
                 filtereditems, columns
         ) {
             Class[] types = new Class[]{
-                java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean[]{
-                false, false, false, false
+                false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
