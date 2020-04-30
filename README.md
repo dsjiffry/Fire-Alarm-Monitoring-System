@@ -4,8 +4,8 @@
 # Fire Alarm Monitoring System
 
 ## Members and Details
- * IT18050318 - M.A. Zeid    -
- * IT17029896 - D.S. Jiffry  - 0766430330 - dsjiffry@gmail.com
+ * IT18050318 - M.A. Zeid    - 076 461 9998 - it18050318@my.sliit.lk
+ * IT17029896 - D.S. Jiffry  - 076 643 0330 - dsjiffry@gmail.com
  * IT18060690 - M.R.M. Rifan -
  * IT18200034 - M.A.F. Hasna -
 
