@@ -29,9 +29,11 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 
 	private final String SENSOR_API_URL = "http://localhost:5000/api";
 	private final String AUTHENTICATION_BASE_URL = "http://localhost:8080";
+	private KafkaConsumers consumers;
 
 	public Server() throws RemoteException {
 		super();
+		consumers = new KafkaConsumers();
 	}
 
 	public static void main(String[] args) {
@@ -67,13 +69,20 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 	 */
 	@Override
 	public boolean addSensor(int floorNumber, int roomNumber, String username, String sensorType) {
+		String sensorUID = "sensor" + floorNumber + roomNumber + sensorType;
 		Map<String, String> body = new HashMap<>();
 		body.put("username", username);
-		body.put("sensorUID", "sensor" + floorNumber + roomNumber + sensorType);
+		body.put("sensorUID", sensorUID);
 		body.put("floor", String.valueOf(floorNumber));
 		body.put("room", String.valueOf(roomNumber));
 		body.put("sensorType", sensorType);
-		return makeRequest(body, "POST", SENSOR_API_URL + "/registerSensor");
+		if(makeRequest(body, "POST", SENSOR_API_URL + "/registerSensor"))
+		{
+			consumers.addTopic(sensorUID);
+			runSensor(sensorUID);
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -85,7 +94,12 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 	public boolean removeSensor(int floorNumber, int roomNumber, String sensorType) throws RemoteException {
 		Map<String, String> body = new HashMap<>();
 		String sensorUID = "sensor" + floorNumber + roomNumber + sensorType;
-		return makeRequest(body, "DELETE", SENSOR_API_URL + "/deleteSensor?sensorUID=" + sensorUID);
+		if(makeRequest(body, "DELETE", SENSOR_API_URL + "/deleteSensor?sensorUID=" + sensorUID))
+		{
+			consumers.removeTopic(sensorUID);
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -174,6 +188,15 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 	}
 
 	/**
+	 * getting the reading of a sensor
+	 * @param sensorName
+	 */
+	@Override
+	public String getReading(String sensorName) throws RemoteException {
+		return consumers.getReading(sensorName);
+	}
+
+	/**
 	 * creating the default user for testing
 	 */
 	public void createUser() {
@@ -230,6 +253,18 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 		}
 		return true;
 	}
+
+
+	private void runSensor(String sensorName)
+	{
+		Runtime rt = Runtime.getRuntime();
+		try {
+			rt.exec("cmd.exe /c cd \"..\\..\\Sensor_Service\\sensor_client\\ \" & start cmd.exe /k \"node senor_client "+sensorName+"\"");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 
 	private static final long serialVersionUID = 1L;
 

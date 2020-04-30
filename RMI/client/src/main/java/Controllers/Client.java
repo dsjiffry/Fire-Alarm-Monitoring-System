@@ -55,8 +55,8 @@ public class Client {
      *
      * @param floorNumber
      * @param roomNumber
-     * @param state true will make the sensor active, false will make it
-     * inactive
+     * @param state true will make the sensor active, false will make it inactive
+     * @param sensorType "smoke" or "co2"
      * @return true if request was successful
      */
     public boolean changeState(int floorNumber, int roomNumber, boolean state, String sensorType) {
@@ -72,6 +72,7 @@ public class Client {
      *
      * @param floorNumber
      * @param roomNumber
+     * @param sensorType "smoke" or "co2"
      * @return true if request was successful
      */
     public boolean removeSensor(int floorNumber, int roomNumber, String sensorType) {
@@ -120,6 +121,19 @@ public class Client {
             return service.checkAuthenticationServer();
         } catch (RemoteException ex) {
             return false;
+        }
+    }
+
+    /**
+     * getting the reading of a sensor
+     *
+     * @param sensorName
+     */
+    public String getReading(String sensorName) {
+        try {
+            return service.getReading(sensorName);
+        } catch (RemoteException ex) {
+            return "error";
         }
     }
 

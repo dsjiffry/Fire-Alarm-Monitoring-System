@@ -18,4 +18,6 @@ public interface ServerInterface extends Remote {
     public boolean login(String username, String password) throws RemoteException;
     
     public boolean checkAuthenticationServer()  throws RemoteException;
+
+    public String getReading(String sensorName) throws RemoteException;
 }
