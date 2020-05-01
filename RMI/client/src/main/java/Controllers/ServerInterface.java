@@ -3,6 +3,7 @@ package Controllers;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import model.Sensor;
 
 public interface ServerInterface extends Remote {
@@ -19,5 +20,5 @@ public interface ServerInterface extends Remote {
     
     public boolean checkAuthenticationServer()  throws RemoteException;
 
-    public String getReading(String sensorName) throws RemoteException;
+   public HashMap<String,String> getReading(HashMap<String, String> sensorName) throws RemoteException;
 }

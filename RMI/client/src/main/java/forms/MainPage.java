@@ -11,6 +11,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.JOptionPane;
@@ -37,6 +38,7 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
     private ArrayList<Sensor> sensors;
     private Vector<String> columns;
     private Vector<Vector<Object>> items;
+    HashMap<String, String> sensorReadings;
     private Alert alert;
     private Client rmiclient;
     private final String USERNAME;
@@ -62,6 +64,7 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
+        sensorReadings = new HashMap<>();
 
         columns = new Vector<>();
         columns.add("Floor");
@@ -120,6 +123,14 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
                 continue;
             }
 
+            for (Sensor sensor : sensors) {
+                String sensorUID = "sensor" + sensor.getFloor() + sensor.getRoom() + sensor.getSensorType();
+                sensorReadings.put(sensorUID, "Not Running");
+            }
+            if (!sensorReadings.isEmpty()) {
+                sensorReadings = rmiclient.getReading(sensorReadings);
+            }
+
             UpdateTable();
             jTable1.setEnabled(true);
 
@@ -150,7 +161,8 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
 
             String reading;
             if (sensor.isActive()) {
-                reading = rmiclient.getReading("sensor" + sensor.getFloor() + sensor.getRoom() + sensor.getSensorType());
+                String sensorUID = "sensor" + sensor.getFloor() + sensor.getRoom() + sensor.getSensorType();
+                reading = sensorReadings.get(sensorUID);
             } else {
                 reading = "none";
             }
@@ -177,15 +189,16 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
                         row.add("Inactive");
                     }
                     row.add(sensor.getSensorType());
-                    
+
                     String reading;
                     if (sensor.isActive()) {
-                        reading = rmiclient.getReading("sensor" + sensor.getFloor() + sensor.getRoom() + sensor.getSensorType());
+                        String sensorUID = "sensor" + sensor.getFloor() + sensor.getRoom() + sensor.getSensorType();
+                        reading = sensorReadings.get(sensorUID);
                     } else {
                         reading = "none";
                     }
                     row.add(reading);
-                    
+
                     filtereditems.add(row);
                 }
             }
@@ -413,6 +426,7 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
                 return canEdit [columnIndex];
             }
         });
+        jTable1.setAutoscrolls(false);
         jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane2.setViewportView(jTable1);
 
@@ -604,7 +618,7 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
                 .addGroup(addSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(sensorTypeDropDown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 92, Short.MAX_VALUE)
                 .addComponent(addSensorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(37, 37, 37))
         );

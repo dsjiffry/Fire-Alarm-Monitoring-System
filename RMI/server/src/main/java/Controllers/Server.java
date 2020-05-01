@@ -34,6 +34,9 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 	public Server() throws RemoteException {
 		super();
 		consumers = new KafkaConsumers();
+
+		Thread thread = new Thread(consumers);
+		thread.start();
 	}
 
 	public static void main(String[] args) {
@@ -192,7 +195,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 	 * @param sensorName
 	 */
 	@Override
-	public String getReading(String sensorName) throws RemoteException {
+	public HashMap<String,String> getReading(HashMap<String,String> sensorName) throws RemoteException {
 		return consumers.getReading(sensorName);
 	}
 
