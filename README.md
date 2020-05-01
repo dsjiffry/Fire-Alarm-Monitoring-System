@@ -35,4 +35,12 @@ value greater than 5, of any sensor. An email and an SMS can be sent in such an 
   * In case a fire occurred the sensor API would call on the Alert Service and then the alert service would fetch the emails and numbers from the Authentication service. Now in case the Authentication service is down when the Alert service needs the details. It would send out the emails and messages to the addresses and numbers it has cached. This way we can guarantee that even if all the users don’t get notified at least some of them will be. Since in this kind of safety system it is better to at least notify some people than none at all.
   * This mechanism prevents our Alert service from being completely dependent on the Authentication service. When requesting emails and numbers of the Authentication service is reachable then the cache would also be updated.
 
+## Screenshots
 
+ ### RMI Client
+ 
+ <img src="https://github.com/dsjiffry/Fire-Alarm-Monitoring-System/raw/master/.github/screenshots/Login.PNG" width="40%">
+ <p float="left">
+  <img src="https://github.com/dsjiffry/Fire-Alarm-Monitoring-System/raw/master/.github/screenshots/Add%20Sensor.PNG" width="49%">
+  <img src="https://github.com/dsjiffry/Fire-Alarm-Monitoring-System/raw/master/.github/screenshots/Manage%20Sensors.PNG" width="49%">
+ </p>
