@@ -1,5 +1,0 @@
-{"_id":{"$oid":"5e9c116e1d51881b18140f56"},"username":"tom","password":"-891870877","email":"tom@gmail.com","phoneNumber":"07771234567","type":"user","__v":{"$numberInt":"0"}}
-{"_id":{"$oid":"5e9c11891d51881b18140f57"},"username":"alex","password":"-888989137","email":"alex@gmail.com","phoneNumber":"07771234567","type":"user","__v":{"$numberInt":"0"}}
-{"_id":{"$oid":"5e9c11901d51881b18140f58"},"username":"jane","password":"-888731329","email":"jane@gmail.com","phoneNumber":"07771234567","type":"user","__v":{"$numberInt":"0"}}
-{"_id":{"$oid":"5e9c12a9b9866901c4b66d0d"},"username":"admin","password":"-799317152","email":"admin@gmail.com","phoneNumber":"07771234567","type":"admin","__v":{"$numberInt":"0"}}
-{"_id":{"$oid":"5e9c12beb9866901c4b66d0e"},"username":"derek","password":"-796512120","email":"derek@gmail.com","phoneNumber":"07771234567","type":"user","__v":{"$numberInt":"0"}}
