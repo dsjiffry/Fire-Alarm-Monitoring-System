@@ -3,7 +3,9 @@ package Controllers;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -18,6 +20,7 @@ public class KafkaConsumers implements Runnable {
 	private ArrayList<String> topics; // Array List Of All the topics
 	private HashMap<String, String> values; // Name of sensor and reading
 	private Properties properties;
+	private AtomicBoolean hasTopicsBeenUpdated;
 
 	public KafkaConsumers() {
 		properties = new Properties();
@@ -29,35 +32,34 @@ public class KafkaConsumers implements Runnable {
 
 		topics = new ArrayList<String>();
 		values = new HashMap<>();
-
-		Thread thread = new Thread(this);
-		thread.setDaemon(true);
-		thread.start();
-
+		hasTopicsBeenUpdated = new AtomicBoolean(true);
 	}
 
 	public void addTopic(String sensorName) {
 		topics.add(sensorName);
+		hasTopicsBeenUpdated.set(true);
 	}
 
 	public void removeTopic(String sensorName) {
 		topics.remove(sensorName);
+		hasTopicsBeenUpdated.set(true);
 	}
 
-	public String getReading(String sensorName) {
-		if (!values.containsKey(sensorName)) {
-			return "";
+	public HashMap<String, String> getReading(HashMap<String, String> sensorName) {
+		for (Map.Entry<String, String> entry : sensorName.entrySet()) {
+			if (!topics.contains(entry.getKey())) {
+				topics.add(entry.getKey());
+				hasTopicsBeenUpdated.set(true);
+			}
+			if (values.containsKey(entry.getKey())) {
+				String reading = values.get(entry.getKey());
+				if (reading.contains("timeStamp")) {
+					reading = reading.split(",")[0].replaceAll("\\{", "").replaceAll("\"", "").split(":")[1];
+				}
+				sensorName.put(entry.getKey(), reading);
+			}
 		}
-
-		String reading = values.get(sensorName);
-		while (reading == null) {
-			ThreadSleep(100);
-			reading = values.get(sensorName);
-		}
-		if (reading.contains("timeStamp")) {
-			return reading.split(",")[0].replaceAll("\\{", "").replaceAll("\"", "").split(":")[1];
-		}
-		return reading;
+		return sensorName;
 	}
 
 	public void run() {
@@ -67,14 +69,16 @@ public class KafkaConsumers implements Runnable {
 				ThreadSleep(1000);
 				continue;
 			}
-			consumer.subscribe(topics);
-			synchronized (consumer) {
-				ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));
-				for (ConsumerRecord<String, String> record : records) {
-					values.put(record.topic(), record.value());
-				}
+			if (hasTopicsBeenUpdated.get()) {
+				consumer.subscribe(topics);
+				hasTopicsBeenUpdated.set(false);
+			}
+			ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));
+			for (ConsumerRecord<String, String> record : records) {
+				values.put(record.topic(), record.value());
 			}
 		}
+
 	}
 
 	private void ThreadSleep(long milliseconds) {

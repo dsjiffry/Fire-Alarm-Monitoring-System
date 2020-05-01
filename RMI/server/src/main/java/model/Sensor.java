@@ -2,30 +2,25 @@ package model;
 
 import java.io.Serializable;
 
-public class Sensor implements Serializable
-{	
+public class Sensor implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	private String username;
 	private String sensorUID;
 	private String status = "online";
 	private int floor;
 	private int room;
 	private String sensorType;
-	private int smokeLevel = 0;
-	private int co2Level = 0;
-	
-	public Sensor(int floorNumber, int roomNumber) 
-	{
+
+	public Sensor(int floorNumber, int roomNumber) {
 		this.setFloor(floorNumber);
 		this.setRoom(roomNumber);
-		
-		setSensorUID(String.valueOf(floorNumber) + String.valueOf(roomNumber));		
+
+		setSensorUID(String.valueOf(floorNumber) + String.valueOf(roomNumber));
 	}
 
 	public boolean isActive() {
-		if(status.equalsIgnoreCase("online"))
-		{
+		if (status.equalsIgnoreCase("online")) {
 			return true;
 		}
 		return false;
@@ -34,25 +29,9 @@ public class Sensor implements Serializable
 	public void setActive() {
 		this.status = "online";
 	}
-	
+
 	public void setInactive() {
 		this.status = "offline";
-	}
-
-	public int getSmokeLevel() {
-		return smokeLevel;
-	}
-
-	public void setSmokeLevel(int smokeLevel) {
-		this.smokeLevel = smokeLevel;
-	}
-
-	public int getCo2Level() {
-		return co2Level;
-	}
-
-	public void setCo2Level(int co2Level) {
-		this.co2Level = co2Level;
 	}
 
 	public int getFloor() {
@@ -94,9 +73,5 @@ public class Sensor implements Serializable
 	public void setSensorType(String sensorType) {
 		this.sensorType = sensorType;
 	}
-	
-	
 
-	
-	
 }

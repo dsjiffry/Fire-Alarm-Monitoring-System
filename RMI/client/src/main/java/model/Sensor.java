@@ -12,8 +12,6 @@ public class Sensor implements Serializable {
     private int floor;
     private int room;
     private String sensorType;
-    private int smokeLevel = 0;
-    private int co2Level = 0;
 
     public Sensor(int floorNumber, int roomNumber) {
         this.setFloor(floorNumber);
@@ -23,9 +21,6 @@ public class Sensor implements Serializable {
     }
 
     public boolean isActive() {
-        if (status == null) {
-            return false;
-        }
         if (status.equalsIgnoreCase("online")) {
             return true;
         }
@@ -38,22 +33,6 @@ public class Sensor implements Serializable {
 
     public void setInactive() {
         this.status = "offline";
-    }
-
-    public int getSmokeLevel() {
-        return smokeLevel;
-    }
-
-    public void setSmokeLevel(int smokeLevel) {
-        this.smokeLevel = smokeLevel;
-    }
-
-    public int getCo2Level() {
-        return co2Level;
-    }
-
-    public void setCo2Level(int co2Level) {
-        this.co2Level = co2Level;
     }
 
     public int getFloor() {

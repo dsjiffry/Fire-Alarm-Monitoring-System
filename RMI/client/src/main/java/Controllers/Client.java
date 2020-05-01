@@ -6,6 +6,7 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import model.Sensor;
 
 public class Client {
@@ -55,7 +56,8 @@ public class Client {
      *
      * @param floorNumber
      * @param roomNumber
-     * @param state true will make the sensor active, false will make it inactive
+     * @param state true will make the sensor active, false will make it
+     * inactive
      * @param sensorType "smoke" or "co2"
      * @return true if request was successful
      */
@@ -128,12 +130,14 @@ public class Client {
      * getting the reading of a sensor
      *
      * @param sensorName
+     * @return HashMap with sensorUID and reading
      */
-    public String getReading(String sensorName) {
+    public HashMap<String, String> getReading(HashMap<String, String> sensorName) {
         try {
             return service.getReading(sensorName);
         } catch (RemoteException ex) {
-            return "error";
+            ex.printStackTrace();
+            return new HashMap<>();
         }
     }
 
