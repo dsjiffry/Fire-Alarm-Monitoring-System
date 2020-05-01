@@ -88,6 +88,7 @@ How to run the System:
 			
 	Start the RMI Client:
 		1) go to \RMI\client
-		2) run " mvn exec:java -Dexec.mainClass="forms.Login" " in cmd.
-		3) Login using the username and password as "admin".
+		2) First run "mvn clean install" to build the project
+		3) Then run " mvn exec:java -Dexec.mainClass="forms.Login" " in cmd.
+		4) Login using the username and password as "admin".
 	

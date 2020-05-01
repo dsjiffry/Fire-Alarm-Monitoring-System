@@ -125,7 +125,7 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
 
             for (Sensor sensor : sensors) {
                 String sensorUID = "sensor" + sensor.getFloor() + sensor.getRoom() + sensor.getSensorType();
-                sensorReadings.put(sensorUID, "Not Running");
+                sensorReadings.put(sensorUID, "Waiting");
             }
             if (!sensorReadings.isEmpty()) {
                 sensorReadings = rmiclient.getReading(sensorReadings);
