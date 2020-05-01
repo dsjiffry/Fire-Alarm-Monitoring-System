@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,500,700&display=swap');
+
+h3
+{
+  margin: 0em;
+  padding: 0em;
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 2em;
+}
+
+body
+{
+ 
+  color: #FFFFFF;
+
+}
+.App {
+  height: 100vh;
+  width: 100vw;
+  /* margin : 1em; */
+  font-family: 'Montserrat', sans-serif;
+
+}
+
+.homeGridContainer
+{
+    background-image: url("./images/desktop.png");
+    background-repeat: no-repeat;
+    background-size: auto;
+    background-color: #05020F;
+
+    display: grid;
+    grid-template-columns: 2fr minmax(30vh, 1fr) 0.5fr;
+}
+
+.loginFormContainer
+{
+  height: 100vh;
+  grid-row: 1;
+  grid-column: 2/3;
+  background-color: #1D1D1F;
+  padding-left: 1em;
+  padding-right: 1em;
+ 
+}
+
+.loginFormContainerInternal
+{
+  height: 100vh;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+
+  
+}
+
+input[type=text] , input[type=password] {
+  background-color: #1D1D1F;
+  border-bottom: 1px solid #EB4900;
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  font-size: 1.5em;
+  
+  padding: 0.25em;
+  color: white;
+}
+
+button{
+  background: #05020F;
+  color: #EB4900;
+  font-weight: 700;
+  box-shadow: 0px 4px 4px #EB4900;
+  height: 3em;
+  margin-top: 2em;
+  width: 18vw;
+  padding: 1em;
+  border-style: hidden;
+  border-radius: 25px;
+  font-size: 1.8em;
+}
+
+.dashboard{
+
+  background-color: #05020F;
+  height: 100vh;
+  padding: 1em;
+  background: linear-gradient(180deg, #05020F 0%, rgba(23, 5, 77, 0) 100%), #0A0025;
+}
