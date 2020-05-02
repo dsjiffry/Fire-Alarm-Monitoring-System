@@ -1,17 +1,21 @@
 import React from 'react'
 
-export default function Sensor() {
+export default function Sensor({sensorData}) {
+
+    const [value , setValue] = React.useState(0)
+
+
     return (
         <div>
-            Status
+            {sensorData.status}
             <br/>
-            Value
+            {value}
             <br/>
-            Sensor Type
+            {sensorData.sensorType}
             <br/>
-            Sensor UID
+            {sensorData.sensorUID}
             <br/>
-            Room 
+            {sensorData.room}
         </div>
     )
 }
