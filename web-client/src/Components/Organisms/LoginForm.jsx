@@ -1,5 +1,5 @@
 import React from 'react'
-
+import { Redirect } from 'react-router-dom'
 import "../../App.css"
 
 import logo from "../../images/asset.svg"
@@ -11,7 +11,8 @@ const initialState = {
   username: "",
   password: "",
   isSubmitting: false,
-  errorMessage: null
+  errorMessage: null,
+  toDashboard: false
 };
 
 
@@ -39,14 +40,6 @@ export default function LoginForm() {
       errorMessage: null
     });
 
-    //Example JSON body 
-    // {
-    //     "username" : "aqeel",
-    //     "email" : "aqeel@gmail.com",
-    //     "phoneNumber" : "0777312225",
-    //     "type" : "admin",
-    //     "password" : "1234"
-    // }
 
     fetch("http://localhost:8080/loginAdmin", {
       method: "post",
@@ -69,14 +62,19 @@ export default function LoginForm() {
 
             })
             .then(
-
               (response) => {
                 response.json().then(
                   (res) => {
                     dispatch({
                       type: "LOGIN",
-                      payload: {sensors : res , user : data.username}
+                      payload: { sensors: res, user: data.username }
                     })
+
+                    setData({
+                      ...data,
+                      toDashboard: true
+                    });
+
                   });
               }
             )
@@ -129,7 +127,7 @@ export default function LoginForm() {
 
           <br />
           <button onClick={handleFormSubmit} type="submit">Login</button>
-
+          {data.toDashboard ? <Redirect to='/Dashboard' /> : <></>}
         </div>
 
       </form>

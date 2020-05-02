@@ -7,7 +7,7 @@ export default function SensorBoard(props) {
 
     return (
         <div>
-            Floor
+            {props.floor}
             <hr/>
             <Sensor/>
             <br/>

@@ -3,8 +3,7 @@ import './App.css';
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
-  Link
+  Route, 
 } from "react-router-dom";
 import WelcomePage from './Pages/WelcomePage';
 import Dashboard from './Pages/Dashboard';
@@ -18,6 +17,7 @@ const initialState = {
   isAuthenticated: false,
   user: null,
   token: null,
+  sensors: []
 };
 
 //Reducer function to Login and store user credential in browser storage and to remove 
@@ -25,18 +25,17 @@ const reducer = (state, action) => {
   switch (action.type) {
     case "LOGIN":
 
-          // localStorage.setItem("user", JSON.stringify(action.payload.user));
-          // localStorage.setItem("sensors", JSON.stringify(action.payload.user));
+          localStorage.setItem("user", JSON.stringify(action.payload.user));
+          localStorage.setItem("sensors", JSON.stringify(action.payload.sensors));
           
       // localStorage.setItem("token", JSON.stringify(action.payload.token));
-      // return {
-      //   ...state,
-      //   isAuthenticated: true,
-      //   user: action.payload.user,
-      //   token: action.payload.token
-      // };
-      console.log(action)
-      return {};
+      return {
+        ...state,
+        isAuthenticated: true,
+        user: action.payload.user,
+        sensors: action.payload.sensors
+      };
+     
     case "LOGOUT":
       localStorage.clear();
       return {
