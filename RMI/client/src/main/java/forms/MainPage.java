@@ -84,25 +84,25 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
         t1.start();
 
         deleteSensorButton.setEnabled(false);
-        activeToggle.setEnabled(false);
+//        activeToggle.setEnabled(false);
         jTable1.getSelectionModel().addListSelectionListener((ListSelectionEvent event) -> {
 
             if (jTable1.getSelectedRow() > -1) {
                 int floorNumber = (int) jTable1.getValueAt(jTable1.getSelectedRow(), 0);
                 String state = (String) jTable1.getValueAt(jTable1.getSelectedRow(), 2);
                 deleteSensorButton.setEnabled(true);
-                activeToggle.setEnabled(true);
+//                activeToggle.setEnabled(true);
 
-                if (floorNumber > 0) {
-                    if (state.equalsIgnoreCase("active")) {
-                        activeToggle.setSelected(true);
-                    } else {
-                        activeToggle.setSelected(false);
-                    }
-                }
+//                if (floorNumber > 0) {
+//                    if (state.equalsIgnoreCase("active")) {
+//                        activeToggle.setSelected(true);
+//                    } else {
+//                        activeToggle.setSelected(false);
+//                    }
+//                }
             } else {
                 deleteSensorButton.setEnabled(false);
-                activeToggle.setEnabled(false);
+//                activeToggle.setEnabled(false);
             }
         });
 
@@ -251,7 +251,6 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
         manageSensor = new javax.swing.JPanel();
         label3 = new java.awt.Label();
         jPanel7 = new javax.swing.JPanel();
-        activeToggle = new javax.swing.JToggleButton();
         jLabel3 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
         deleteSensorButton = new javax.swing.JButton();
@@ -329,28 +328,6 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        activeToggle.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        activeToggle.setForeground(new java.awt.Color(255, 255, 255));
-        activeToggle.setText("Active");
-        activeToggle.setBorder(null);
-        UIManager.put("ToggleButton.withoutIcon", true);
-
-        UIManager.put("ToggleButton[withoutIcon].selectedBackground", MaterialColors.GREEN_800);
-        UIManager.put("ToggleButton[withoutIcon].selectedForeground", MaterialColors.WHITE);
-        UIManager.put("ToggleButton[withoutIcon].background", MaterialColors.RED_800);
-        UIManager.put("ToggleButton[withoutIcon].foreground", MaterialColors.WHITE);
-
-        Border border = new EmptyBorder(0,0,0,0);
-        UIManager.put("ToggleButton[withoutIcon].selectedBorder", border);
-        UIManager.put("ToggleButton[withoutIcon].border", border);
-
-        activeToggle.setUI(new MaterialToggleButtonUI());
-        activeToggle.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                activeToggleActionPerformed(evt);
-            }
-        });
-
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Select a floor to view it's sensors");
@@ -398,7 +375,6 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
         UIManager.put("Table.font", (new java.awt.Font("Tahoma", 0, 16)));
 
         mtUI.installUI(jTable1);
-        jTable1.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
         jTable1.setForeground(new java.awt.Color(255, 255, 255));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -453,13 +429,11 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
                     .addGroup(manageSensorLayout.createSequentialGroup()
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 568, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
-                        .addGroup(manageSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(activeToggle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(deleteSensorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(deleteSensorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(45, 45, 45))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, manageSensorLayout.createSequentialGroup()
                         .addComponent(tableMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))))
@@ -480,16 +454,14 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
                         .addGroup(manageSensorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
                             .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(109, 109, 109)
-                        .addComponent(activeToggle, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(49, 49, 49)
+                        .addGap(199, 199, 199)
                         .addComponent(deleteSensorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(manageSensorLayout.createSequentialGroup()
                         .addGap(30, 30, 30)
                         .addComponent(tableMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Manage  Sensors", manageSensor);
@@ -554,7 +526,6 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
         jLabel5.setText("Type:");
 
         MaterialComboBoxUI mtcbUI2 = (MaterialComboBoxUI)MaterialComboBoxUI.createUI(sensorTypeDropDown);
-        sensorTypeDropDown.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
         sensorTypeDropDown.setForeground(new java.awt.Color(255, 255, 255));
         sensorTypeDropDown.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "smoke", "co2" }));
         mtcbUI2.installUI(sensorTypeDropDown);
@@ -682,33 +653,6 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
 
     }//GEN-LAST:event_addSensorButtonActionPerformed
 
-    private void activeToggleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activeToggleActionPerformed
-        int selectedRow = jTable1.getSelectedRow();
-        if (selectedRow > -1) {
-            activeToggle.setEnabled(false);
-            int floorNumber = (int) jTable1.getValueAt(selectedRow, 0);
-            int roomNumber = (int) jTable1.getValueAt(selectedRow, 1);
-            String sensorType = (String) jTable1.getValueAt(jTable1.getSelectedRow(), 3);
-
-            boolean state = false;
-            if (jTable1.getValueAt(selectedRow, 2).toString().equalsIgnoreCase("Inactive")) {
-                state = true;
-            }
-            boolean result = rmiclient.changeState(floorNumber, roomNumber, state, sensorType);
-            if (!result) {
-                alert = new Alert("Unable to change Sensor state");
-            } else {
-                try {
-                    sensors = rmiclient.getSensors();
-                    UpdateTable();
-                } catch (Exception e) { // happens if not online.
-                    tableMessage.setText("Please make sure that you are online.");
-                }
-            }
-            activeToggle.setEnabled(true);
-        }
-    }//GEN-LAST:event_activeToggleActionPerformed
-
     private void deleteSensorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteSensorButtonActionPerformed
 
         if (jTable1.getSelectedRow() < 0) {
@@ -770,7 +714,6 @@ public class MainPage extends javax.swing.JFrame implements Runnable {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JToggleButton activeToggle;
     private javax.swing.JPanel addSensor;
     private javax.swing.JButton addSensorButton;
     private javax.swing.JButton closeButton;
