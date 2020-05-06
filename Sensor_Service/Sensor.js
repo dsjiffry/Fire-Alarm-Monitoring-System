@@ -6,7 +6,8 @@ const schema = mongoose.Schema({
   floor: Number,
   room: Number,
   sensorType: String,
-  status : String
+  status : String,
+  reading: Number
 })
 
 module.exports = mongoose.model("Sensor", schema)

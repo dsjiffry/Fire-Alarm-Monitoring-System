@@ -54,17 +54,13 @@ async function kafkaListners(topic_array,username,floorNum, roomNum , type)
 
     await consumer.run({
         eachMessage: async ({ topic, partition, message }) => {
-            // console.log("************\n")
-            //     console.log({
-            //         topic,
-            //         offset: message.offset,
-            //         value: message.value.toString(),
-            //     })
-            // console.log("************\n")
-            // console.log(JSON.parse(message.value.toString()).reading, topic , username)
-
+            
+            //Caturing the sensor reading and timeStamp of each senor emmited
             let reading = Number(JSON.parse(message.value.toString()).reading);
             let timeStamp =  new Date(JSON.parse(message.value.toString()).timeStamp);
+
+            //Updating the main senosor server reading of corresponding sensor reading
+            updateSensorReading(topic , reading)
 
             if( reading > 5  )
             {
@@ -81,7 +77,17 @@ async function kafkaListners(topic_array,username,floorNum, roomNum , type)
 
 
 
-
+    //Updating sensor reading field in the main sensor server 
+    function updateSensorReading(sensorUID, reading)
+    {
+        fetch(`http://localhost:5000/api/updateSensorReading/${sensorUID}`, {
+            method: 'put',
+            body:    JSON.stringify({"reading" : reading}),
+            headers: { 'Content-Type': 'application/json' },
+        })
+        .then(res => console.log(res))
+       
+    }
 
 
 

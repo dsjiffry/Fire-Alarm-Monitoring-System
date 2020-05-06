@@ -62,7 +62,12 @@ getAllSensors().then(
                     
                     let currentTime = new Date();
 
-                    if( ( Math.floor( ( currentTime - element.lastReading ) / 1000) ) >= 30)
+                    
+
+                    let status_checking_time_frame = 30 //(secs) the minimum gap between now and last reading for a status update online or offline 
+
+                    //settting online or off line status depending on the gap between now and last reading
+                    if( ( Math.floor( ( currentTime - element.lastReading ) / 1000) ) >= status_checking_time_frame)
                     {
                         console.log(`sensor ${element.sensorUID} is Offline`)
                         let url = `http://localhost:5000/api/updateSensorStatus/${element.sensorUID}?status=offline`
@@ -110,13 +115,17 @@ getAllSensors().then(
 
         await consumer.subscribe(topic_array)
 
+        //This method runs everytime a message is sent to the kafka topic which is the sensorUID from a client
+
         await consumer.run({
             eachMessage: async ({ topic, partition, message }) => {
 
                 //console.log(topic, JSON.parse(message.value) ) 
                 sensor_table[index] = {sensorUID: topic , lastReading : new Date(JSON.parse(message.value).timeStamp) }
-
+                //updating the reading  main server 
+                
             },
         })
         
     }
+
