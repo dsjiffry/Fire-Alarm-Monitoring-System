@@ -40,7 +40,7 @@ export default function LoginForm() {
       errorMessage: null
     });
 
-
+    //Loggin In the User 
     fetch("http://localhost:8080/loginAdmin", {
       method: "post",
       mode: 'cors',
@@ -55,11 +55,11 @@ export default function LoginForm() {
       .then(res => {
 
         console.log(res)
+        //If Credentials valid Fetching the senor Data
         if (res.ok) {
           fetch(`http://localhost:5000/api/getSensorsByUsername/${data.username}`,
             {
               method: "get",
-
             })
             .then(
               (response) => {
@@ -67,7 +67,7 @@ export default function LoginForm() {
                   (res) => {
                     dispatch({
                       type: "LOGIN",
-                      payload: { sensors: res, user: data.username }
+                      payload: { sensors: res, user: data.username.trim() }
                     })
 
                     setData({
@@ -86,7 +86,9 @@ export default function LoginForm() {
 
         }
         else {
+          alert("Username or password doesnt match !")
           throw res;
+          
         }
 
       })

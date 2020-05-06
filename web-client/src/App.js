@@ -27,7 +27,6 @@ const reducer = (state, action) => {
 
           localStorage.setItem("user", JSON.stringify(action.payload.user));
           localStorage.setItem("sensors", JSON.stringify(action.payload.sensors));
-          
       // localStorage.setItem("token", JSON.stringify(action.payload.token));
       return {
         ...state,
