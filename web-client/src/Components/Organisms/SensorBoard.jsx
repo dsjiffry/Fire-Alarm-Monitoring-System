@@ -1,6 +1,8 @@
 import React from 'react'
 import Sensor from '../Molecules/Sensor'
 
+import "../../App.css"
+
 import {AuthContext} from '../../App.js'
 
 export default function SensorBoard(props) {
@@ -39,9 +41,11 @@ export default function SensorBoard(props) {
 
     return (
         <div>
-            {props.floor}
-            <hr/>
-            {sensorElements}
+            <h2>{`Floor ${props.floor}`}</h2>
+            <br/>
+            <div className="sensorBoard">
+                {sensorElements}
+            </div>
         </div>
     )
 }

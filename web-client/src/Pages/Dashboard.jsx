@@ -11,7 +11,7 @@ export default function Dashboard() {
   const [sensorBoards, setSensorBoards] = React.useState([]);
 
   // Time between two request to fetch data from api in seconds
-  let refresh_period = 10;
+  let refresh_period = 3;
 
   //This custom react hook is from Dan abromov personel blog https://overreacted.io/making-setinterval-declarative-with-react-hooks/
   useInterval(() => {
@@ -89,8 +89,8 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard">
-      <h3>{JSON.parse(window.localStorage.getItem('user'))}</h3>
-      <hr />
+      <h2 style={{fontWeight:"700"}}>{JSON.parse(window.localStorage.getItem('user'))}</h2>
+      <br />
 
       {sensorBoards}
 
