@@ -1,15 +1,17 @@
-const url = "http://localhost:5000/api/getAllSensors"
-
-//const url_update_status = "http://localhost:5000/api/"
-
 const fetch = require('node-fetch');
 const { Kafka } = require("kafkajs");
 
+//connecting to a kafka instance
 const kafka = new Kafka({
     clientId: 'sensor-monitor',
     brokers: ['localhost:9092']
 })
 
+
+//Endpoint to the Sensor API to get all sensors 
+const url = "http://localhost:5000/api/getAllSensors"
+
+//Method to fetch all sensor date 
 const getAllSensors = async () => {
     let sensorArray = await fetch(url);
     sensorArray = await sensorArray.json();
@@ -19,9 +21,16 @@ const getAllSensors = async () => {
 
 console.log("Initializing ......")
 
+//Calling async method
 getAllSensors().then(
 
     (data) => {
+
+        //This parameter controls how frequent the service checks the sensors
+        let refetch_time_frame = 10 ; //in seconds
+        
+        //This paramters controls the initial delay
+        let initial_delay = 10 ; //in seconds
 
         setTimeout(() => {
 
@@ -56,13 +65,11 @@ getAllSensors().then(
                     console.log(element.sensorUID, Math.floor( (currentTime - element.lastReading)/1000 ) )
                 });
 
-                // Check if they have been updated for atleast 60 Seconds If Not Set status as offline
+                // Check if they have been updated for atleast n Seconds If Not Set status as offline
 
                 sensor_table.forEach(element => {
                     
                     let currentTime = new Date();
-
-                    
 
                     let status_checking_time_frame = 30 //(secs) the minimum gap between now and last reading for a status update online or offline 
 
@@ -91,9 +98,9 @@ getAllSensors().then(
                 });
 
 
-            }, 10000);
+            }, refetch_time_frame * 1000);
 
-        }, 10000)
+        }, initial_delay * 1000)
 
        
     }
@@ -122,7 +129,7 @@ getAllSensors().then(
 
                 //console.log(topic, JSON.parse(message.value) ) 
                 sensor_table[index] = {sensorUID: topic , lastReading : new Date(JSON.parse(message.value).timeStamp) }
-                //updating the reading  main server 
+               
                 
             },
         })

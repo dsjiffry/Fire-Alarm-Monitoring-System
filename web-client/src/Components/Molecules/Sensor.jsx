@@ -8,6 +8,7 @@ export default function Sensor({sensorData}) {
 
     React.useEffect(()=>{
 
+        //If reading is above 5 set the background color to RED if not keep the default 
         if ( Number( sensorData.reading ) > 5)
         {
             setBgColour("#FF0000")
@@ -46,11 +47,7 @@ export default function Sensor({sensorData}) {
             <div className = "txt4" style = {{fontWeight:"lighter"}}>
                 {sensorData.sensorUID}
             </div>
-          
-           
-          
-            
-           
+
            
         </div>
     )

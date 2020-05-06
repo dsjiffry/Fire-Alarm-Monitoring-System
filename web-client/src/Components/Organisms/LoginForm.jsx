@@ -16,9 +16,6 @@ const initialState = {
 };
 
 
-
-
-
 export default function LoginForm() {
 
   const [data, setData] = React.useState(initialState);
@@ -65,11 +62,14 @@ export default function LoginForm() {
               (response) => {
                 response.json().then(
                   (res) => {
+                    //Calling the reducer in the Auth context
                     dispatch({
                       type: "LOGIN",
                       payload: { sensors: res, user: data.username.trim() }
                     })
 
+
+                    //sending to Dashboard
                     setData({
                       ...data,
                       toDashboard: true
