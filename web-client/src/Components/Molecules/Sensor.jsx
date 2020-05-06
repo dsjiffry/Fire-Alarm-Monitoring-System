@@ -8,7 +8,7 @@ export default function Sensor({sensorData}) {
 
     React.useEffect(()=>{
 
-        if ( Number( sensorData.reading ) >= 5)
+        if ( Number( sensorData.reading ) > 5)
         {
             setBgColour("#FF0000")
         }
