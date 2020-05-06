@@ -1,4 +1,0 @@
-
-
-	8081 -> Alert Service
-	8080 -> Authentication Service
