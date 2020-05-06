@@ -10,16 +10,20 @@ const bodyParser = require("body-parser")
 mongoose.set('useFindAndModify', false);
 
 
-//const router = express.Router();
-
+//On the start of the server this method runs
+//It grabs all the sensors from the Database
+//Then it will start a kafka topic(channel) for each unique sensor
+//This is to make sure that even if the kafka server is restarted or lost 
+//the new instance will contain channels for each sensor
 async function startSensorChannels () 
 {
     try {
 
+        //Getting all sensors
         let sensors = await Sensor.find();
         console.log(sensors)
     
-
+        //Connecting to Kafka 
         const kafka = new Kafka({
             "clientId": "node-sensor-api",
             "brokers" :["localhost:9092"]
@@ -32,6 +36,7 @@ async function startSensorChannels ()
 
         let topicContetnt = [];
 
+        //creating a kafka topic list to send as parameter for create.topic method
         sensors.forEach(
             (sensor) => 
             {
@@ -44,7 +49,7 @@ async function startSensorChannels ()
             }
         )
 
-        //A-M, N-Z
+        //Creating topics in kafka cluster
         await admin.createTopics({
             "topics": topicContetnt
         })
@@ -66,6 +71,7 @@ async function startSensorChannels ()
 
 const port = process.env.PORT || 5001;
 
+//Connecting to mongodb instance 
 mongoose
   .connect("mongodb://localhost:28017/acmedb", 
   { 
@@ -82,8 +88,10 @@ mongoose
     app.use(bodyParser.json()) 
     app.use("/api", routes)
     
+    //Starting the sensor Channels
     startSensorChannels();
-
+    
+    //Starting the server
     app.listen(5000, () => {
       console.log("Server has started!")
     })

@@ -1,5 +1,6 @@
 const mongoose = require("mongoose")
 
+//Mongoose Schema Model for Sensors 
 const schema = mongoose.Schema({
   username: String,
   sensorUID : String,

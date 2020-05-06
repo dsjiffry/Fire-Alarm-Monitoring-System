@@ -11,18 +11,18 @@ export default function SensorBoard(props) {
     
     const [sensorElements , setSensorElements] = React.useState([])
 
-
-
     React.useEffect(() => {
        
         //console.log("You should re render every 10 seconds")
 
+        //Grab only the sensors for the relevet floor
         let sensor_array = state.sensors.filter(
             (sensor) =>   sensor.floor === props.floor
         )
 
         let sensor_elements = [];
-         
+        
+        //For each sensor render a Sensor Element
         sensor_array.forEach(element => {
             sensor_elements.push(
                 <>
