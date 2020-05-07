@@ -44,3 +44,10 @@ value greater than 5, of any sensor. An email and an SMS can be sent in such an 
   <img src="https://github.com/dsjiffry/Fire-Alarm-Monitoring-System/raw/master/.github/screenshots/Add%20Sensor.PNG" width="49%">
   <img src="https://github.com/dsjiffry/Fire-Alarm-Monitoring-System/raw/master/.github/screenshots/Manage%20Sensors.PNG" width="49%">
  </p>
+ 
+  ### Web Client
+  
+ <p float="left">
+  <img src="https://github.com/dsjiffry/Fire-Alarm-Monitoring-System/raw/master/.github/screenshots/web%20login.png" width="49%">
+  <img src="https://github.com/dsjiffry/Fire-Alarm-Monitoring-System/raw/master/.github/screenshots/sensors.png" width="49%">
+ </p>
