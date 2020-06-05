@@ -33,7 +33,7 @@ value greater than 5, of any sensor. An email and an SMS can be sent in such an 
 
   * In our system we have identified the Alert Service and the sensor API as the critical services. In case one of the other services was down when a fire started we wanted to make sure that the alert would still go out to the users. To do this we implemented a local caching mechanism. When the alert service first comes online it would get the emails and phone numbers of the users from the Authentication service and store them locally.
   * In case a fire occurred the sensor API would call on the Alert Service and then the alert service would fetch the emails and numbers from the Authentication service. Now in case the Authentication service is down when the Alert service needs the details. It would send out the emails and messages to the addresses and numbers it has cached. This way we can guarantee that even if all the users don’t get notified at least some of them will be. Since in this kind of safety system it is better to at least notify some people than none at all.
-  * This mechanism prevents our Alert service from being completely dependent on the Authentication service. When requesting emails and numbers of the Authentication service is reachable then the cache would also be updated.
+  * This mechanism prevents our Alert service from being completely dependent on the Authentication service. When requesting emails and numbers from the Authentication service, if it is reachable then the cache would also be updated.
 
 ## Screenshots
 
